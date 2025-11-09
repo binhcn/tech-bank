@@ -24,7 +24,7 @@ How does consumer group read message?
 
 ---
 
-How does Kafka broker ensure durability and availabililty?
+How does Kafka broker ensure durability?
 - replication mechanism:
   - leader partition:
     - responsible for handling all the read and write requests to the partition
