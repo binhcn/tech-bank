@@ -14,3 +14,10 @@ Topic:
 - a logical grouping of partitions
 - the process of publishing and consuming messages based on topic definition
 - it is just a way of scaling data
+
+---
+
+How does consumer group read message?
+- read message by offset
+- periodically commit offset
+- in case of failure or restart, resume reading from last committed offset
