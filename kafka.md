@@ -33,3 +33,6 @@ How does Kafka broker ensure durability?
     - they reside on the same or different broker with leader partition
     - don't handle direct client requests, just passively replicate messages received by the leader
     - just act like a backup and be ready to take over if leader happens to go down
+  - relevant settings:
+    - acks (default acks=all)
+    - replication factor (3 is default)
