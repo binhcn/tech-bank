@@ -21,3 +21,15 @@ How does consumer group read message?
 - read message by offset
 - periodically commit offset
 - in case of failure or restart, resume reading from last committed offset
+
+---
+
+How does Kafka broker ensure durability and availabililty?
+- replication mechanism:
+  - leader partition:
+    - responsible for handling all the read and write requests to the partition
+    - They are distributed across the Kafka brokers to balance the load
+  - follower partitions:
+    - they reside on the same or different broker with leader partition
+    - don't handle direct client requests, just passively replicate messages received by the leader
+    - just like a backup and be ready to take over if leader happens to go down
