@@ -1,1 +1,1 @@
- ![Collections classification](assets/collections-classification.png)
+ ![Collections classification](assets/collection-framework-hierarchy.png)
