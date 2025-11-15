@@ -1,1 +1,1 @@
-![MVC 3 layer architecture](assets/three-layer-architectur.png)
+![MVC 3 layer architecture](assets/three-layer-architecture.png)
