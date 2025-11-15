@@ -14,3 +14,9 @@ ORM
 - it's mapping between your object and relational database
   - an object is a table in a database
   - a field in object is a column in the table
+
+
+
+
+References:
+- ![Introduction to Spring Data JPA | What is JPA? Benefits & Use Cases](https://www.youtube.com/watch?v=hL_MplPZkhQ)
