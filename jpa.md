@@ -8,3 +8,7 @@ JDBC
   - Prepare the statement
   - Set Parameters
   - Execute the Query
+
+ORM
+- Object relational mapping
+- it's mapping between your object and relational database
