@@ -11,8 +11,8 @@ JDBC
 
 ORM
 - Object relational mapping
-- it's mapping between your object/entity/model and relational database
-  - an object is a table in a database
+- it's mapping between your object and relational database
+  - an object/entity/model is a table in a database
   - a field in object is a column in the table
 
 
