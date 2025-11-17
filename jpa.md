@@ -50,6 +50,8 @@ em.persist(book);
 - If you make any changes to managed entity, it will be automatically synchronized with database
 - Entity is in detached state, which means it is once in persistance context, but now it is no longer managed by Entity Manager
 - Entity is in removed state, which means it is marked for deletion but it is still inside the Persistance Context
+![Entity Lifecycle](assets/entity-lifecycle.png)
+
 References:
 - [Introduction to Spring Data JPA | What is JPA? Benefits & Use Cases](https://www.youtube.com/watch?v=hL_MplPZkhQ)
 - [JPA Architecture & Entity Lifecycle Explained | Spring Data JPA Deep Dive](https://www.youtube.com/watch?v=vypAqz4MEus)
