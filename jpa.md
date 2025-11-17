@@ -1,5 +1,8 @@
 ![MVC 3 layer architecture](assets/three-layer-architecture.png)
 
+Entity
+- is a object which will be mapped to table inside your relational database
+
 JDBC
 - JAVA database connection:
   - Load the JDBC Driver
@@ -34,3 +37,4 @@ Spring Data JPA
 
 References:
 - [Introduction to Spring Data JPA | What is JPA? Benefits & Use Cases](https://www.youtube.com/watch?v=hL_MplPZkhQ)
+- [JPA Architecture & Entity Lifecycle Explained | Spring Data JPA Deep Dive](https://www.youtube.com/watch?v=vypAqz4MEus)
