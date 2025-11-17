@@ -37,13 +37,19 @@ Spring Data JPA
 
 - Entity is a object which will be mapped to table inside your relational database
 - Entity manager is an interface which is responsible for managing entities. It will perform the operations on entity, for example save(), persist(), remove(), find(),...
-- Persistance Context is a cache where entities will be temporarily stored. Entity Manager interacts with Persistance Context to retrieve entities
+- Persistance Context is a cache where managed entities will be temporarily stored. Entity Manager interacts with Persistance Context to retrieve entities
 ```
 EntityManager em = entityManagerFactory.createEntityManager();
 em.persist(book);
 ```
 ![JPA Architecture](assets/jpa-architecture.png)
 
+
+- Entity Manager does not manage newly-created entity, which is in transient state
+- When Entity Manager do persist() with transient entity, the bean will be added inside the Persistance Context. It is in Managed state
+- If you make any changes to managed entity, it will be automatically synchronized with database
+- Entity is in detached state, which means it is once in persistance context, but now it is no longer managed by Entity Manager
+- Entity is in removed state, which means it is marked for deletion but it is still inside the Persistance Context
 References:
 - [Introduction to Spring Data JPA | What is JPA? Benefits & Use Cases](https://www.youtube.com/watch?v=hL_MplPZkhQ)
 - [JPA Architecture & Entity Lifecycle Explained | Spring Data JPA Deep Dive](https://www.youtube.com/watch?v=vypAqz4MEus)
