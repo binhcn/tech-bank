@@ -18,7 +18,12 @@ ORM
 
 JPA
 - Java Persistance API
-- JPA is basically specification provided by Java in order to manage relational data inside your Spring application
+- JPA is basically specification provided by Java in order to manage relational data inside your application
+- It contains standardized APIs which work with many different providers, for example, it is kind of abstraction layer on top of Hiberna
+
+Why do we need JPA rather than Hibernate? Why not to use Hibernate directly?
+- JPA is basically specification while Hibernate is one of the implementation of JPA
+- No one stops you directly to use only Hibernate. But in case if you need to migrate away from Hibernate, you will need to do a lot of changes inside your application
 
 
 References:
