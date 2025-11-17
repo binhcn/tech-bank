@@ -20,7 +20,6 @@ JPA
 - Java Persistance API
 - JPA is basically specification provided by Java in order to manage relational data inside your application
 - It contains standardized APIs which work with many different providers, for example, it is kind of abstraction layer on top of Hibernate
-- 
 
 Why do we need JPA rather than Hibernate? Why not to use Hibernate directly?
 - JPA is basically specification while Hibernate is one of the implementation of JPA
@@ -28,7 +27,8 @@ Why do we need JPA rather than Hibernate? Why not to use Hibernate directly?
 
 
 Spring Data JPA
-- is basically framework provided by Spring framework in order to do database connections 
+- is basically framework provided by Spring framework in order to do database connections
+- It simplifies CRUD operations by providing interfaces like CrudRepository, JpaRepository, PagingAndSortingRepository,...
 
 ![Spring Data JPA](assets/spring-data-jpa.png)
 
