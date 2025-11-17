@@ -36,7 +36,8 @@ Spring Data JPA
 
 
 - Entity is a object which will be mapped to table inside your relational database
-- Entity manager is an interface which is responsible for managing entities. It will perform the operations on entity, for example save(), persist(), remove(), find(),... 
+- Entity manager is an interface which is responsible for managing entities. It will perform the operations on entity, for example save(), persist(), remove(), find(),...
+- Persistance Context is a cache where entities will be temporarily stored. Entity Manager interacts with Persistance Context to retrieve entities
 ```
 EntityManager em = entityManagerFactory.createEntityManager();
 em.persist(book);
