@@ -18,7 +18,7 @@ ORM
 
 JPA
 - Java Persistance API
-- JPA is basically specification provided by Java in order to manage relational data inside your application bu using OOP principle
+- JPA is basically specification provided by Java in order to manage relational data inside your Spring application
 
 
 References:
