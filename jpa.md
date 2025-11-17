@@ -16,7 +16,9 @@ ORM
   - a field in object is a column in the table
 - The famous framework for ORM is Hibernate, EclipseLink, OpenJPA,...
 
-
+JPA
+- Java Persistance API
+- JPA is basically specification provided by Java in order to manage relational data inside your application bu using OOP principle
 
 
 References:
