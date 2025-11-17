@@ -1,7 +1,6 @@
 ![MVC 3 layer architecture](assets/three-layer-architecture.png)
 
-Entity
-- is a object which will be mapped to table inside your relational database
+
 
 JDBC
 - JAVA database connection:
@@ -34,6 +33,11 @@ Spring Data JPA
 - It simplifies CRUD operations by providing interfaces like CrudRepository, JpaRepository, PagingAndSortingRepository,...
 
 ![Spring Data JPA](assets/spring-data-jpa.png)
+
+
+- Entity is a object which will be mapped to table inside your relational database
+- Entity manager is an interface which is responsible for managing entities. It will do all the operations that you are going to do on this particular entity, for example save(), persist()
+![JPA Architecture](assets/jpa-architecture.png)
 
 References:
 - [Introduction to Spring Data JPA | What is JPA? Benefits & Use Cases](https://www.youtube.com/watch?v=hL_MplPZkhQ)
