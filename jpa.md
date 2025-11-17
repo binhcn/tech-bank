@@ -14,7 +14,7 @@ ORM
 - it's mapping between your object and relational database
   - an object/entity/model is a table in a database
   - a field in object is a column in the table
-- The famous framework for ORM is Hibernate
+- The famous framework for ORM is Hibernate, EclipseLink, OpenJPA,...
 
 
 
