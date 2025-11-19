@@ -11,3 +11,8 @@ Thread thread = Thread.ofVirtual().unstarted(runnable);
 thread.start()
 thread.join() //wait for thread to be completed
 ```
+
+
+
+References:
+- [Exploring Virtual Threads in Java 21 | Handling Millions of Concurrent Tasks](https://www.youtube.com/watch?v=y8bYn27rqCg)
