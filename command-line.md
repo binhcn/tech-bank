@@ -19,6 +19,7 @@ kill -s SIGQUIT 123 = kill -3 123
   - The core dump is a snapshot of the working memory of the process at the time we sent the kill signal and by default will be written to the current working directory.
   - We can use core dumps for debugging purposes.
 - Note that while quitting is the default behavior, Java is an example of a process that doesn’t quit with a SIGQUIT, it only does a core dump.
+  ![SIGQUIT (3)](assets/sigquit.png)
 ```
 kill -s SIGKILL 123 = kill -9 123
 ```
