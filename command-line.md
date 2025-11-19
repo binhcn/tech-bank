@@ -5,3 +5,16 @@ ps -ef | grep java
 -e flag/option to print all the processes within the system, not just the ones from the current terminal
 -f flag to see more details output
 ```
+
+
+Kill command
+```
+kill 123 = kill -s SIGTERM 123 = kill -15 123
+```
+- The default behavior of kill is to send the SIGTERM signal to a process, by which we ask that process to gracefully shutdown
+```
+kill -s SIGQUIT 123 = kill -3 123
+```
+- Sending a process the SIGQUIT signal is the same as asking it to shutdown with SIGTERM. The difference is that SIGQUIT makes the OS perform what is called a core dump:
+  - The core dump is a snapshot of the working memory of the process at the time we sent the kill signal and by default will be written to the current working directory.
+  - We can use core dumps for debugging purposes.
