@@ -6,4 +6,5 @@ Virtual thread
 ```
 Thread thread = Thread.ofVirtual().unstarted(runnable);
 thread.start()
+thread.join() //wait for thread to be completed
 ```
