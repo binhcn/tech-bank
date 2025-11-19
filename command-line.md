@@ -1,3 +1,3 @@
 
 Show all process status
-'''ps -ef | grep java'''
+```ps -ef | grep java```
