@@ -29,5 +29,11 @@ kill -s SIGKILL 123 = kill -9 123
 - This means there is a risk of data loss or even worse, data corruption.
 
 
+How to view a long file
+```
+more file.txt
+```
+
+
 References
 - [Kill Commands in Linux](https://www.baeldung.com/linux/kill-commands)
