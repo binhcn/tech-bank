@@ -11,3 +11,6 @@ Abstract class
 - is basically a base class which have some abstract methods and some defined methods.
 - The actual implementation of abstract class will be done by the concrete classes which will have all the implementation
 - It is meant to be inherited
+
+Final class
+- It means no class can inherit it
