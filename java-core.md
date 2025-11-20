@@ -20,7 +20,10 @@ Sealed class
 - If you want to restrict the subclasses for a particular class, you can make it sealed
 ```
 sealed class A extends Thread implements Clonable permits B,C {}
-non-sealed class B extends A {}
+non-sealed class B extends A {} //sealed, non-sealed or final modifiers are expected
 final class C extends A {}
 class D extends B {}
+
+sealed interface X permits Y {}
+sealed interface Y extends X {} //sealed or non-sealed modifiers are expected
 ```
