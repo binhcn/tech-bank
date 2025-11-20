@@ -14,3 +14,7 @@ Abstract class
 
 Final class
 - It means no class can inherit it
+
+
+Sealed class
+- If you want to restrict the subclasses for a particular class, you can make it sealed
