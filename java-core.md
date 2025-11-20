@@ -18,3 +18,9 @@ Final class
 
 Sealed class
 - If you want to restrict the subclasses for a particular class, you can make it sealed
+```
+sealed class A permits B,C {}
+non-sealed class B extends A {}
+final class C extends A {}
+class D extends B {}
+```
