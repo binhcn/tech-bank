@@ -34,6 +34,11 @@ How to view a long file
 more file.txt
 ```
 
+Create or append file
+```
+echo "binh" > file.txt //create file
+echo "binh" >> file.txt // append file
+```
 
 References
 - [Kill Commands in Linux](https://www.baeldung.com/linux/kill-commands)
