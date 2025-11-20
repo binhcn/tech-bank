@@ -17,6 +17,7 @@ Final class
 
 
 Sealed class
+- is a feature of Java 17
 - If you want to restrict the subclasses for a particular class, you can make it sealed
 - The modifiers of sub-class of sealed class are sealed, non-sealed or final
 - The modifiers of sub-interface of sealed interface are sealed or non-sealed
