@@ -18,6 +18,8 @@ Final class
 
 Sealed class
 - If you want to restrict the subclasses for a particular class, you can make it sealed
+- The modifiers of sub-class of sealed class are sealed, non-sealed or final
+- The modifiers of sub-interface of sealed interface are sealed or non-sealed
 ```
 sealed class A extends Thread implements Clonable permits B,C {}
 non-sealed class B extends A {} //sealed, non-sealed or final modifiers are expected
