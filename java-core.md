@@ -30,3 +30,7 @@ class D extends B {}
 sealed interface X permits Y {}
 sealed interface Y extends X {} //sealed or non-sealed modifiers are expected
 ```
+
+Record classes
+- a feature in Java 17
+- is created just to carry data, you can't change the value after initialization
