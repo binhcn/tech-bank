@@ -34,6 +34,7 @@ sealed interface Y extends X {} //sealed or non-sealed modifiers are expected
 Record classes
 - a feature in Java 17
 - is created just to carry data, you can't change the value after initialization
+- Record class is a shortcut of POJO class
 - Creating a immutable Java object with full overriden methods (toString(), equals(), getter,...) is so verbose and cumbersome. Thus, we can simply create record class insteads.
 - Record classes can implement interface, extend record but NOT extends other classes
 ```
