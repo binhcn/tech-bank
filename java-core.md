@@ -34,7 +34,7 @@ sealed interface Y extends X {} //sealed or non-sealed modifiers are expected
 Record classes
 - a feature in Java 17
 - is created just to carry data, you can't change the value after initialization
-- insteand of creating a verbose, lengthy Java object, we can simply create record class
+- insteand of creating a verbose, lengthy and cumbersome Java object with full overriden methods (toString(), equals(), getter,...), we can simply create record class
 ```
 record Alien (int id, String name) {
   public Alien {
