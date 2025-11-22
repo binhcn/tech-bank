@@ -4,3 +4,5 @@ Strategy pattern
 - Additionally, this class  handles several functionalities, so far in this example it handles both payments by credit card and through PayPal and that contradicts the single  responsibility principle as well
 
 <img src="assets/strategy-pattern.png" alt="Strategy Pattern" width="600"/>
+
+- To fix this what we need is kind of a strategy  that places each payment method in its own class making this class responsible  for a particular payment method and additionally these classes we  create should be easily interchangeable or replaceable by one another. One way to do this is to apply the Strategy Design Pattern
