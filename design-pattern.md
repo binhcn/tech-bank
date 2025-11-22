@@ -12,3 +12,5 @@ Strategy pattern
 
 
 <img src="assets/strategy-pattern-3.png" alt="Strategy Pattern" width="600"/>
+
+- To do this and as we just mentioned  we have to start by extracting each payment specific logic to its own class in our example we are going to have the PaymentByCreditCard and  the PaymentByPayPal classes and to make these classes interchangeable  what you have to do is create a common interface for all of them to implement. You can also go one step further and extract the common behaviors into separate methods instead  of dumping all the logic into a single one. So in this example we can extract  the collectPaymentDetails, the validatePaymentDetails and the pay methods this will grant us more flexibility later on while shaping the skeleton of the common  algorithm all these strategies should make use of.
