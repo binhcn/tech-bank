@@ -7,3 +7,8 @@ Strategy pattern
 
 - To fix this what we need is kind of a strategy  that places each payment method in its own class making this class responsible  for a particular payment method and additionally these classes we  create should be easily interchangeable or replaceable by one another. One way to do this is to apply the Strategy Design Pattern
 - The strategy pattern is a behavioral design pattern that lets you define a family of algorithms, put each of them into a separate class,  and make their objects interchangeable.
+
+<img src="assets/strategy-pattern-2.png" alt="Strategy Pattern" width="600"/>
+
+
+<img src="assets/strategy-pattern-3.png" alt="Strategy Pattern" width="600"/>
