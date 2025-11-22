@@ -7,6 +7,7 @@ Strategy pattern
 
 - To fix this what we need is kind of a strategy  that places each payment method in its own class making this class responsible  for a particular payment method and additionally these classes we  create should be easily interchangeable or replaceable by one another. One way to do this is to apply the Strategy Design Pattern
 - The strategy pattern is a behavioral design pattern that lets you define a family of algorithms, put each of them into a separate class,  and make their objects interchangeable.
+- by following the strategy  pattern you will be applying the single responsibility and the open-closed principles because each strategy is  isolated in a separate class and you now have the ability to introduce  new strategies without modifying the existing strategy classes nor the context.
 
 <img src="assets/strategy-pattern-2.png" alt="Strategy Pattern" width="600"/>
 
@@ -14,3 +15,16 @@ Strategy pattern
 <img src="assets/strategy-pattern-3.png" alt="Strategy Pattern" width="600"/>
 
 - To do this and as we just mentioned  we have to start by extracting each payment specific logic to its own class in our example we are going to have the PaymentByCreditCard and  the PaymentByPayPal classes and to make these classes interchangeable  what you have to do is create a common interface for all of them to implement. You can also go one step further and extract the common behaviors into separate methods instead  of dumping all the logic into a single one. So in this example we can extract  the collectPaymentDetails, the validatePaymentDetails and the pay methods this will grant us more flexibility later on while shaping the skeleton of the common  algorithm all these strategies should make use of.
+
+Compare state design pattern vs strategy
+- the state can be considered  as an extension of strategy as both patterns are based on composition  they change the behavior of the context by delegating some work to helper objects
+- State
+  - States can be dependent as you can easily jump from one state to another
+  - The state pattern is about doing different things based on the state, hence the result may vary
+- Strategy
+  - Strategies are completely independent and unaware of each other
+  - The Strategy pattern is really about having different implementations that accomplish the same thing
+
+
+References:
+- https://www.youtube.com/watch?v=Nrwj3gZiuJU
