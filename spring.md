@@ -35,8 +35,8 @@ ObjectProvider
 
 
 Scoped Proxy
-- is a technique to create Spring-generated proxy object of short-lived bean
-- Then, Spring will inject proxy object into the long-lived bean instead of short-lived bean in order to fetch short-lived bean lazily at runtime
+- is a technique to inject short-lived bean into a long-lived bean in order to fetch short-lived bean lazily at runtime
+- it will create Spring-generated proxy object of short-lived bean. Then, Spring will inject proxy object into the long-lived bean instead of short-lived bean 
 - There is a BeanFactory inside proxy object cglib, it will check whether the target bean is prototype and if yes, return new bean
   
 
@@ -63,6 +63,7 @@ public class PrototypeBean {
 <img src="assets/scoped-proxy.png" alt="Scoped proxy" width="600"/>
 - Lookup annotation
   - it will create CGLIB proxy object of the class containing @Lookup annotation and inject the proxy into the upstream bean
+  - There is a BeanFactory inside proxy object cglib, it will check whether the target bean is prototype and if yes, return new bean
 ```
 @Service
 public class SingletonServiceWithLookup {
