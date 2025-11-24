@@ -19,8 +19,34 @@ public String callExternalApi() {}
 public String recover(RuntimeException e) {}
 ```
 ![Spring retry](assets/spring-retry.png)
-<img src="assets/spring-retry-pseudo.png" alt="Spring retry pseudo" width="600"/>
+<img src="assets/spring-retry-pseudo.png" alt="Spring retry pseudo" width="400"/>
 
 
 Proxy in Spring
 - There are a couple of types of proxies: CGLIB or JDK dynamic
+
+ObjectProvider
+- is a special Spring injection mechanism that lets you fetch a bean lazily, safely and dynamically at runtime
+
+
+How to make a prototype bean injected lazily into singleton bean?
+- ObjectProvider
+```
+@Service
+public class SingletonServiceWithObjectFactory {
+  @Autowired
+  private ObjectProvider<PrototypeBean> provider;
+
+  public void serve() {
+    provider.getObject().print(); //each time serve() method is invoked, a new instance of PrototypeBean class is returned
+  }
+}
+```
+
+
+
+
+
+
+
+
