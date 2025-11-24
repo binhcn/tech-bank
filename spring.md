@@ -75,6 +75,7 @@ public class SingletonServiceWithLookup {
   }
 }
 ```
+<img src="assets/lookup-annotation.png" alt="Lookup annotation" width="400"/>
 
 
 
