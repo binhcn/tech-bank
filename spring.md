@@ -35,9 +35,10 @@ ObjectProvider
 
 
 Scoped Proxy
-- is a Spring-generated proxy object of shorter-lived (prototype, request, session) bean
-- Instead of injecting shorter-lived bean into a longer-lived bean (like a singleton), Spring will inject scoped proxy into the singleton in order to fetch shorter-lived bean lazily at runtime
-
+- is a technique to create Spring-generated proxy object of short-lived bean
+- Then, Spring will inject proxy object into the long-lived bean instead of short-lived bean in order to fetch short-lived bean lazily at runtime
+- There is a BeanFactory inside proxy object cglib, it will check whether the target bean is prototype and if yes, return new bean
+  
 
 How to make a prototype bean injected lazily into singleton bean?
 - ObjectProvider
@@ -53,6 +54,12 @@ public class SingletonServiceWithObjectFactory {
 }
 ```
 - Scoped Proxy
+```
+@Component
+@Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class PrototypeBean {
+}
+```
 
 
 
