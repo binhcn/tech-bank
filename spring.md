@@ -27,6 +27,7 @@ Proxy in Spring
 
 ObjectProvider
 - is a special Spring injection mechanism that lets you fetch a bean lazily, safely and dynamically at runtime
+- There is a BeanFactory inside ObjectProvider, it will check whether the bean is prototype and return new bean
 
 
 How to make a prototype bean injected lazily into singleton bean?
