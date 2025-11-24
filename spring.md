@@ -1,7 +1,11 @@
 
 The scope of bean
-- Singleton bean: returns the same instance when it is invokeed each time
-- Prototype bean: returns new instance when it is invokeed each time, @Scope("prototype")
+- Longer-lived bean:
+  - Singleton: returns the same instance when it is invokeed each time
+- Shorter-lived bean:
+  - Prototype: returns new instance when it is invokeed each time, @Scope("prototype")
+  - Request
+  - Session
 
 
 Spring Retry
