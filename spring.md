@@ -60,7 +60,21 @@ public class SingletonServiceWithObjectFactory {
 public class PrototypeBean {
 }
 ```
+- Lookup annotation
+```
+@Service
+public class SingletonServiceWithLookup {
+  public void serve() {
+    PrototypeBean bean = getPrototype();
+    bean.print();
+  }
 
+  @Lookup
+  public PrototypeBean getPrototype() {
+    return null; // Spring overrides this method internally
+  }
+}
+```
 
 
 
