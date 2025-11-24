@@ -14,7 +14,8 @@ public String callExternalApi() {}
 public String recover(RuntimeException e) {}
 ```
 ![Spring retry](assets/spring-retry.png)
+![Spring retry pseudo](assets/spring-retry-pseudo.png)
 
 
 Proxy in Spring
-- There are a couple of types of proxies: CGI or JDK dynamic
+- There are a couple of types of proxies: CGLIB or JDK dynamic
