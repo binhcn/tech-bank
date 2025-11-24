@@ -1,7 +1,7 @@
 
 The scope of bean
-- Singleton bean
-- Prototype bean
+- Singleton bean: returns the same instance when it is invokeed each time
+- Prototype bean: returns new instance when it is invokeed each time
 
 
 Spring Retry
