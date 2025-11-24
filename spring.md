@@ -30,8 +30,13 @@ Proxy in Spring
 - There are a couple of types of proxies: CGLIB or JDK dynamic
 
 ObjectProvider
-- is a special Spring injection mechanism that lets you fetch a bean lazily, safely and dynamically at runtime
+- is a special Spring injection mechanism that lets you fetch a bean lazily and dynamically at runtime
 - There is a BeanFactory inside ObjectProvider, it will check whether the target bean is prototype and if yes, return new bean
+
+
+Scoped Proxy
+- is a Spring-generated proxy object of shorter-lived (prototype, request, session) bean
+- Instead of injecting shorter-lived bean into a longer-lived bean (like a singleton), Spring will inject scoped proxy into the singleton in order to fetch shorter-lived bean lazily at runtime
 
 
 How to make a prototype bean injected lazily into singleton bean?
@@ -47,6 +52,7 @@ public class SingletonServiceWithObjectFactory {
   }
 }
 ```
+- Scoped Proxy
 
 
 
