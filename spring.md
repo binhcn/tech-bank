@@ -60,6 +60,7 @@ public class SingletonServiceWithObjectFactory {
 public class PrototypeBean {
 }
 ```
+<img src="assets/scoped-proxy.png" alt="Scoped proxy" width="600"/>
 - Lookup annotation
 ```
 @Service
@@ -75,7 +76,7 @@ public class SingletonServiceWithLookup {
   }
 }
 ```
-<img src="assets/lookup-annotation.png" alt="Lookup annotation" width="400"/>
+<img src="assets/lookup-annotation.png" alt="Lookup annotation" width="600"/>
 
 
 
