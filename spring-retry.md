@@ -14,7 +14,7 @@ public String callExternalApi() {}
 public String recover(RuntimeException e) {}
 ```
 ![Spring retry](assets/spring-retry.png)
-![Spring retry pseudo](assets/spring-retry-pseudo.png)
+<img src="assets/spring-retry-pseudo.png" alt="Spring retry pseudo" width="600"/>
 
 
 Proxy in Spring
