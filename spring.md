@@ -1,4 +1,9 @@
 
+The scope of bean
+- Singleton bean
+- Prototype bean
+
+
 Spring Retry
 - exposes a library which contains automatic retry mechanism inside Spring framework
 - it works on proxy-based approach or Spring AOP -> it will scan @Retryable, @Recovery annotations and create the proxy, which is a wrapper of the class containing these annotations
