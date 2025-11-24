@@ -61,6 +61,7 @@ public class PrototypeBean {
 }
 ```
 <img src="assets/scoped-proxy.png" alt="Scoped proxy" width="600"/>
+
 - Lookup annotation
   - it will create CGLIB proxy object of the class containing @Lookup annotation and inject the proxy into the upstream bean
   - There is a BeanFactory inside proxy object cglib, it will check whether the target bean is prototype and if yes, return new bean
