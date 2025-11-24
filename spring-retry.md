@@ -13,7 +13,7 @@ public String callExternalApi() {}
 @Recover
 public String recover(RuntimeException e) {}
 ```
-![Spring retry](assets/spring-retry.pnd)
+![Spring retry](assets/spring-retry.png)
 
 
 Proxy in Spring
