@@ -46,3 +46,34 @@ record Alien (int id, String name) {
   public void show();
 }
 ```
+
+
+Future
+- Java Future API was introduced in Java 5 and is a way to achieve asynchronous programming
+- is used as a reference to the result of an asynchronous computation
+
+
+Completable Future
+- was introduced in Java 8 and is a way to achieve asynchronous programming
+- Its main purpose is to handle the limitations of Future
+- implements the Future and CompletionStage interfaces
+
+Future limitations
+- Futures cannot be completed manually using the latest cache version of data available
+  - If the remote service is down, we cannot complete the Future manually
+- futures cannot perform further action until the result is available
+  - it doesn't notify us of its completion
+  - it provides a get() method?which blocks until the result is available
+- attaching a callback function is not possible
+  - we don't have the ability to attach a callback function to the Future and have it called automatically when the Future's result is available
+- multiple futures cannot be chained together
+  - sometimes, we'll need to execute a long-running task and when that task is done, we need to send its result to another long-running task
+- Multiple Futures cannot be combined together
+  - Say that we have 10 different Futures that we want to run in parallel and then run some function after all of them completes
+- There is no exception handling in the Future API
+
+
+
+Asynchronous programming
+- writing non-blocking code by running a task on a separate thread rather than the main application thread
+- this way, the main thread won't have to wait for the completion of this async task and can execute other tasks in parallel
