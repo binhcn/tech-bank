@@ -59,8 +59,8 @@ Completable Future
 - implements the Future and CompletionStage interfaces
 
 Future limitations
-- Futures cannot be completed manually using the latest cache version of data available
-  - If the remote service is down, we cannot complete the Future manually
+- Futures cannot be completed manually
+  - If the remote service is down, we cannot complete the Future manually using the latest cache version of data available
 - futures cannot perform further action until the result is available
   - it doesn't notify us of its completion
   - it provides a get() method?which blocks until the result is available
@@ -75,5 +75,5 @@ Future limitations
 
 
 Asynchronous programming
-- writing non-blocking code by running a task on a separate thread rather than the main application thread
+- writing non-blocking code and running a task on a separate thread rather than the main application thread
 - this way, the main thread won't have to wait for the completion of this async task and can execute other tasks in parallel
