@@ -1,16 +1,15 @@
 
 
 
-AOP - Aspect Oriented Programming
+### AOP - Aspect Oriented Programming
+- is one of key components of Spring. AOP complements Spring IoC to provide a very capable middleware solution
 - AOP complements OOP by providing another way of thinking about program structure
     - The key unit of modularity in OOP is the class, whereas in AOP is the aspect
-- Aspects enable the modularization of concerns that cut across multiple classes.
+- Aspect enables the modularization of concerns that cut across multiple classes.
     - The cross-cutting conerns can be transaction management, logging,... but not business logic 
     - Aspect enables the separation of cross-cutting conerns from your actual methods, from your actual business logic
-- is one of key components of Spring. AOP complements Spring IoC to provide a very capable middleware solution
 
-
-Terminology
+### Terminology
 - Aspect
     - a modularization of a concern that cuts across multiple classes
     - Transaction management is a good example of a cross-cutting concern.
@@ -26,6 +25,7 @@ Terminology
     - spring uses AspectJ pointcut expression language by default
 
 
+### Illustration of aspect
 ```
 @After("execution(* com.nab.au.service.ProductService.addProduct(..))")
 @Around("execution(* com.nab.au.service.ProductService.*(..))")
@@ -53,7 +53,7 @@ public Object aroundAdvice(ProceedingJoinPoint pjp) {
 // In the above example, we illustrate one of the most popular usages of @Around advice. The actual method gets invoked only if the cache doesn’t return a result. It’s the exact way the Spring Cache Annotations work.
 ```
 
-AOP proxies
+### AOP proxies
 - Spring AOP is a mechanism based on proxies
 - There are two types of AOP proxies:
     - JDK dynamic proxies enable any interface or set of interfaces to be proxied, including the class implementing interface
