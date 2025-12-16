@@ -87,7 +87,7 @@ CompletableFuture<Void> combinedFuture = positiveFuture.thenAcceptBoth(
 ```
 
 
-Methods related to CompletableFuture
+Methods of CompletableFuture
 - the static methods runAsync() and supplyAsync() allow us to create a completableFuture instance out of the Runnable and Supplier functional interfaces
 - thenApply() methods takes in a Function, so it will transform the result of the completableFuture when it arrives and will produce another result which can be further chained to multiple thenApply() methods
 - thenAccept() method
