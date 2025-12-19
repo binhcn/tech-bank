@@ -2,9 +2,9 @@
 - Asynchronous programming - 1
 - Future - 1
 - Limitation of future - 1
-- Completable Future
-- Methods of CompletableFuture
-- Illustration of CompletableFuture
+- Completable Future - 1
+- Methods of CompletableFuture - 1
+- Illustration of CompletableFuture - 1
 
 
 
