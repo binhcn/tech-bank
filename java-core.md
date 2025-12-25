@@ -48,7 +48,7 @@ record Alien (int id, String name) {
 ```
 
 ### Asynchronous programming
-- writing non-blocking code and running a task on a separate thread rather than the main application thread
+- writing non-blocking code and running the task on a separate thread rather than the main application thread
 - this way, the main thread won't have to wait for the completion of this async task and can execute other tasks in parallel
 
 

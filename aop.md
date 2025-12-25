@@ -11,9 +11,8 @@
 
 ### Terminology
 - Aspect
-    - a modularization of a concern that cuts across multiple classes
-    - Transaction management is a good example of a cross-cutting concern.
-    - in AOP, aspects are implemented by using regular classes (schema-based approach) or regular classes annotated with the @Aspect annotation (@AspectJ style)
+    - In AOP, aspects are implemented by using regular classes (schema-based approach) or regular classes annotated with the @Aspect annotation (@AspectJ style)
+    - it modularizes a concern that cuts across multiple classes - crossing-cutting concern
 - Join point
     - a point during the execution of a program, such as the execution of a method or the handling of an exception.
     - in AOP, a join point always represents a method execution
@@ -50,7 +49,9 @@ public Object aroundAdvice(ProceedingJoinPoint pjp) {
     }
     return articles;
 }
-// In the above example, we illustrate one of the most popular usages of @Around advice. The actual method gets invoked only if the cache doesn’t return a result. It’s the exact way the Spring Cache Annotations work.
+// In the above example, we illustrate one of the most popular usages of @Around advice.
+//The actual method gets invoked only if the cache doesn’t return a result.
+//It’s the exact way the Spring Cache Annotations work.
 ```
 
 ### AOP proxies

@@ -12,16 +12,16 @@
 
 ---
 
-- AOP - Aspect Oriented Programming - 1
-- Terminology - 1
-- Illustration of aspect - 1
-- AOP proxies - 1
+- AOP - Aspect Oriented Programming - 2
+- Terminology - 2
+- Illustration of aspect - 2
+- AOP proxies - 2
 
 
 ---
 
-- Lombok
-- Abstract Syntax Tree - AST
+- Lombok - 1
+- Abstract Syntax Tree - AST - 1
 
 ---
 
