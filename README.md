@@ -1,10 +1,10 @@
 
-- Asynchronous programming - 1
-- Future - 1
-- Limitation of future - 1
-- Completable Future - 1
-- Methods of CompletableFuture - 1
-- Illustration of CompletableFuture - 1
+- Asynchronous programming - 2
+- Future - 2
+- Limitation of future - 2
+- Completable Future - 2
+- Methods of CompletableFuture - 2
+- Illustration of CompletableFuture - 2
 
 
 
@@ -22,6 +22,13 @@
 
 - Lombok - 1
 - Abstract Syntax Tree - AST - 1
+
+---
+
+- How to generate thread dump in Java application - 1
+- Garbage collection
+- ZGC
+- Memory leak
 
 ---
 
