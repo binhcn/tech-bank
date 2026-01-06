@@ -29,7 +29,9 @@
 - Garbage collection
 - ZGC
 - Memory leak
-
+- How does Java application request heap memory for new object
+- Java is a managed language
+- What is the difference between the garbage collection algorithms in Java 8 & 11
 ---
 
 - bring all logging to aspect
