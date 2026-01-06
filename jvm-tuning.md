@@ -47,3 +47,9 @@
 - The way that we can get around is by using a flag -Xms300m to tell the JVM which initial heap size for your application. JVM  will never let the amount of memory you've reserved go below that initial heap size
 ![Java 8 GC](assets/java-8-gc.jpg)
 ![Java 11 GC](assets/java-11-gc.jpg)
+
+### finalize() method
+- When an object is actually garbage collected, it means when the garbage collection process physically removes the object from the heap rather than when it becomes eligible for garbage collection, at this point, Java will run the finalize() method of that object
+- finalize() method was deprecated from Java 9
+- You must never put some kind of code, such as closing resouces in the finalize() method because you don't know if it's ever going to run
+- If your program reaches the end, even if the heap is clustered with lots of objects which are eligible for garbage collection, the JVM might decide not to bother running the garabage collector. In fact, the JVM will simply release all of its allocated memory back to the OS. Thus, these finalize() methods will never be called.
