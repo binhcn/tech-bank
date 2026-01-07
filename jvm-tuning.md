@@ -5,7 +5,9 @@
 - using VisualVM tool to capture thread dump:
   - right click in left sidevar
   - press ThreadDump button in Threads tab
-
+- using two flags to generate a heap dump automatically when happening OutOfMemory
+  - -XX:+HeapDumpOnOutOfMemoryError
+  - -XX:HeapDumpPath=someFilePath
 
 
 ### Garbage collection
@@ -26,8 +28,13 @@
 
 
 ### Memory leak
-- is defined that when one objest is not in use, the memory occupied by objects haven't been freed up and is still there.
+- is defined that when one object is not in use, the memory occupied by objects haven't been freed up and is still there.
 - If you're running programs that have a memory leak, then over time, more and more of your computer's memory will get used up and eventually your computer will start to slow down and even crash
+- Memory leaks shouldn't be possible in Java
+
+### Soft leak
+- is when an object remains referenced from somewhere on the stack when no longer needed
+- Your application is holding memory within the heap that can be never used again. It is running the risk of possibly running out of available heap space on a long running application such as a web server.
 
 
 ### How does Java application request heap memory for new object
