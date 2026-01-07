@@ -23,6 +23,12 @@
 - For completeness, static objects are referenced from the meta space. The references from the meta space will never be deleted. These objects will never be eligible for garbage collection
 - gc() method is actually a suggestion to tell JVM to run a garbage collection process, but there's no guarantee that the JVM will actually do that
 
+### How GC works
+- Rather than searching for all the objects to remove, instead the garbage collector looks for all of the objects that need to be retained and it rescues them.
+- The general algorithm that garbage collectors use is called Mark and Sweep, and this is a two stage process:
+  - Marking stage: the program's execution is first paused, and this is sometimes called a stop the world event. Marking cannot work properly if there are any threads still executing, so all the threads in the application are paused
+  - Sweeping stage 
+
 ### ZGC
 - is a scalable low-latency concurrent garbage collector capable of handling heaps ranging from 8MB to 16TB in size, with sub-milisecond max pause times
 

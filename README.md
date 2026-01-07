@@ -27,12 +27,15 @@
 
 - How to generate thread dump in Java application - 1
 - Garbage collection
+- How GC works
 - ZGC
 - Memory leak
+- Soft leak
 - How does Java application request heap memory for new object
 - Java is a managed language
 - What is the difference between the garbage collection algorithms in Java 8 & 11
 - finalize() method
+
 ---
 
 - bring all logging to aspect
