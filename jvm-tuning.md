@@ -26,8 +26,13 @@
 ### How GC works
 - Rather than searching for all the objects to remove, instead the garbage collector looks for all of the objects that need to be retained and it rescues them.
 - The general algorithm that garbage collectors use is called Mark and Sweep, and this is a two stage process:
-  - Marking stage: the program's execution is first paused, and this is sometimes called a stop the world event. Marking cannot work properly if there are any threads still executing, so all the threads in the application are paused
-  - Sweeping stage 
+  - Marking stage:
+    - The program's execution is first paused, and this is sometimes called a stop the world event. Marking cannot work properly if there are any threads still executing, so all the threads in the application are paused
+    - The garbage collector then checks every single live reference. It simply looks at every variable on the stack and in the meta space if there are static variables. Then it follows its reference, the objects that it finds at the end of the reference are marked as being alive, and it follows any other references that the object has and marks the sub objects as being alive.
+  - Sweeping stage
+    - Once all the referenced objects are marked for keeping, a full scan of the heap can take place and the memory occupied by the objects that have not been marked during the marking phase can then be freed up.
+    - Finally, the objects that are being kept are moved into a single contiguous block of memory. This stops the heap from becoming fragmented over time and makes it easier and quicker for JVM to find memory to allocate to future objects.
+- In fact, the garbage collector doesn't really collect any garbage. It actually collects the alive objects and saves them. This means that the more garbage there is, the garbage collection process is actually faster. If everything on the heap was garbage, the garbage collection process would be pretty much instantaneous
 
 ### ZGC
 - is a scalable low-latency concurrent garbage collector capable of handling heaps ranging from 8MB to 16TB in size, with sub-milisecond max pause times
