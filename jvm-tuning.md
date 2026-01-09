@@ -23,6 +23,22 @@
 - For completeness, static objects are referenced from the meta space. The references from the meta space will never be deleted. These objects will never be eligible for garbage collection
 - gc() method is actually a suggestion to tell JVM to run a garbage collection process, but there's no guarantee that the JVM will actually do that
 
+### Types of collector
+- There are three types of garbage collector:
+  - Serial GC  -XX:+UseSerialGC
+    - use a single thread to perform all of the garbage collection work
+    - it doesn't run as fast as a multi-threaded collector, so your application's performance is going to suffer as a result
+    - it is useful when you're wanting to make sure that some other application is getting the best possible opportunities for good performance
+      - Java application is dong some kind of background task and the performance isn't that important. But the server that your application is running on has another application where you are absolutely working to optimize its performance
+      - On a single processor computer, you're running lots of applications. You use the serial GC to allow the other applications to get the most access to the CPU resources
+  - Parallel GC or Throughput GC -XX:+UseParallelGC
+    - multiple threads performs minor garbage collections in parallel
+    - the default garbage collector if you're using Java 8 or below
+  - Mostly Concurrent GC -XX:+UseConcMarkSweepGC & -XX:+UseG1GC
+    - both of GCs were available in Java 8, but CMS is the default GC in Java 9, G1 is the default GC in Java 10 onwards
+    - The application does need to be paused. Howeveru, with the mostly concurrent GC, it pauses the application to do the marking of objects, but then resumes the application while the sweep phase takes place.
+    - Certainly the idea of a mostly concurrent GC is that the Stop the world part of the garbage collection process is going to be minimized
+
 ### How GC works
 - Rather than searching for all the objects to remove, instead the garbage collector looks for all of the objects that need to be retained and it rescues them.
 - The general algorithm that garbage collectors use is called Mark and Sweep, and this is a two stage process:
@@ -116,4 +132,50 @@
 + Allocation Failure: there wasn't enough space in that part of the heap to create a new object. So it had to do a GC to free up some space
 + Ergonomics: JVM is trying to change the structure of the heap to make this perform well
 + <the size of the heap before GC runs>-><the size of the heap after GC runs>(<total size of the heap>)
+```
+
+- list all java processes
+```
+jps
+
+Output:
+8960 Main
+10236 Jps
+8820 Main
+```
+
+- Java has dynamically altered or resized the size of parts of the heap at runtime. It's enabled by default
+```
+-XX:-UseAdaptiveSizePolicy
+-XX:+UseAdaptiveSizePolicy
+```
+
+- Find out the value of a flag
+```
+jinfo -flag UseAdaptiveSizePolicy 10236
+
+Ouput:
+-XX:+UseAdaptiveSizePolicy
+```
+
+- How many times bigger should the old generation be compared to the young generation
+```
+-XX:NewRatio=n
++ the default value of n is 2
++ n > 0 and n is integer or a whole number
+```
+
+- How much of the young generation should be taken up by each survivor space, either S0 or S1, the rest of this will be the Eden space
+```
+-XX:SurvivorRatio=n
++ the default value of n is 8 => Eden:S0:S1 = 6:1:1
++ JVM will resize them, even though we've specified a size, might wait for long enough
+```
+
+- How many generations should an object survive before it becomes part of the old generation
+```
+-XX:MaxTenuringThreshold=n
++ the default value of n is 15
++ max(n) = 15
++ some versions of Java allow to set it to 16. Effectively, it is treated as being infinity, not a good idea because at least half of heap memory is definitely wasteful
 ```
