@@ -33,6 +33,38 @@
     - Once all the referenced objects are marked for keeping, a full scan of the heap can take place and the memory occupied by the objects that have not been marked during the marking phase can then be freed up.
     - Finally, the objects that are being kept are moved into a single contiguous block of memory. This stops the heap from becoming fragmented over time and makes it easier and quicker for JVM to find memory to allocate to future objects.
 - In fact, the garbage collector doesn't really collect any garbage. It actually collects the alive objects and saves them. This means that the more garbage there is, the garbage collection process is actually faster. If everything on the heap was garbage, the garbage collection process would be pretty much instantaneous
+- In fact, most of the time, the garbage collection never looks at the entire heap, but rather just at one small part of it.
+
+### Why the heap is divided into generations
+- In case there are lots of objects which are not garbage, the stop of world event takes more time and happens seriously. Then the users of our application will probably notice that our applications has frozen perhaps for a few seconds at a time.
+- The starting point for understanding generational GC is that
+  - Most objects in Java live for a very short period of time. If an object survives one garbage collection, then it's more likely to live forever.
+  - It's faster to run the garbage colection process when there's a lot of garbage or when there's only a few objects that are going to survive
+- To make the process as efficient as possible, the heap is actualy organized into separate sections, known as generational garbage collection
+
+### The internals of GC
+- The heap is divided into two sections:
+  - Young generation
+    - New objects are created in the young generation space. The young generation space will fill up quite quickly as it's small. When it's full, a garbage collection takes place, but only on the young generation, known as a minor collection
+    - Because most objects don't survive for long, the young generation, which is full of new objects, is probably mostly garbage. The process to garbage collect in the young generation should be very quick, approximately fractions of a second
+    - As your application runs, there will be lots of minor garbage collections taking place including compacting process, they'll be pretty much instantaneous because the young generation will be quite small and mostly full of garbage.
+    - is split into a further three separate sections: Eden, S0 and S1 - survivor spaces
+  - Old generation
+    - Any surviving objects are then moved to the old generation
+    - Garbage collection will also run on the old generation, but only if it's needed, for example, if it gets full, known as a major collection
+    - A major collection will be a lot slower, approximately a few seconds, because it's a much bigger block of memory to sweep and there may be many objects in the old generation that are still alive. Of course, the compacting process moving all the surviving objects into a single contiguous part of the memory. That will take some time.
+
+<img src="assets/visualvm-gc.png" alt="VisualVM GC" width="600"/>
+
+### The internals of Young Generation
+- The young generation is split into 3 sections: Eden, S0 and S1 - survivor spaces
+  - When an object is created, it's placed in the Eden space. When the Eden space gets full, which will happen quite quickly because it's pretty small, the garbage collection process will take place on the Eden space. Any surviving objects are moved into S0
+  - More objects are created and Eden gets full again, the garbage collection process take places again. But this time, it looks at everything in the Eden space and S0. Any objects that survive get moved into S1. So now S0 and Eden are both empty again.
+  - More objects are created and Eden gets full again, the garbage collection process take places again. But this time, it looks at Eden and S1. It moves any surviving objects into S0.
+  - After a number of these swaps or minor garbage collections or generations, the object is determined to be a long surviving object and will be moved from S0 or S1 into the old generation
+- S0 and S1 are two parts of the young generation that are used to swap the surviving objects. There's no meaning to the zero and the one. There's no priority here. They take alternating turns in holding the surviving objects
+- In the marking process, we're actually not looking at the entire young generation. We're looking at about two thirds of it: Eden space and either S0 or S1.
+- There is one minor negative impact from this process, which is that at all times either zero or S1 will always be empty. So there's a small amount of memory that will always be unused, but that's a minor tradeoff for the performance improvements that this process gives us
 
 ### ZGC
 - is a scalable low-latency concurrent garbage collector capable of handling heaps ranging from 8MB to 16TB in size, with sub-milisecond max pause times
@@ -71,3 +103,17 @@
 - finalize() method was deprecated from Java 9
 - You must never put some kind of code, such as closing resouces in the finalize() method because you don't know if it's ever going to run
 - If your program reaches the end, even if the heap is clustered with lots of objects which are eligible for garbage collection, the JVM might decide not to bother running the garabage collector. In fact, the JVM will simply release all of its allocated memory back to the OS. Thus, these finalize() methods will never be called.
+
+### GC runtime arguments
+- monitor how often garbage collection is taking place in the application
+
+<img src="assets/verbose-gc.jpg" alt="VisualVM GC" width="400"/>
+
+```
+-verbose:gc
++ GC: minor garbage collection
++ Full GC: major garbage collection
++ Allocation Failure: there wasn't enough space in that part of the heap to create a new object. So it had to do a GC to free up some space
++ Ergonomics: JVM is trying to change the structure of the heap to make this perform well
++ <the size of the heap before GC runs>-><the size of the heap after GC runs>(<total size of the heap>)
+```
