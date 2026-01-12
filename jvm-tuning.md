@@ -120,6 +120,18 @@
 - You must never put some kind of code, such as closing resouces in the finalize() method because you don't know if it's ever going to run
 - If your program reaches the end, even if the heap is clustered with lots of objects which are eligible for garbage collection, the JVM might decide not to bother running the garabage collector. In fact, the JVM will simply release all of its allocated memory back to the OS. Thus, these finalize() methods will never be called.
 
+### How G1 GC works
+- The heap is split into regions and by default, there's actually 2048 of them. Initially, some of these regions are allocated to the different parts of the heap, so some will be allocated to Eden, to S0, to S1 or to the old generation. Not all of the regions do need to be allocated.
+- In a minor garbage collection process, it looks at those regions allocated to the young generation. Then it can reallocate the number of regions allocated to each part of the young generation to give it what it thinks will be optimal performance. Each time a minor garbage collection happens, the different parts of the heap could be changed. For example, the GC might decide
+  - some of the regions that have been previously allocated to the survivor spaces should now be allocated to the Eden space
+  - add some of the unallocated regions to the Eden space
+- When a full garbage collection takes place, it will work out for each region in the old generation, which regions are mostly garbage and it will collect the garbage from those regions first. That's why it's called G1, the garbage first collector. In fact, the G1 GC doesn't actually need to look at the entirety of the old generation. It can clear a few regions, that might be enough. So a real full garbage collection on the entire old generation isn't actually necessary.
+- The performance  of G1 GC should generally be better than the other types of GC:
+  - When it needs to do a major collection, it can often do just part of a major collection to free up enough memory
+  - it has the ability to resize and reallocate different areas of the heap to different parts of the young and old generation, again, maximize performance
+
+<img src="assets/g1-gc.png" alt="G1 GC" width="400"/>
+
 ### GC runtime arguments
 - monitor how often garbage collection is taking place in the application
 
@@ -178,4 +190,26 @@ Ouput:
 + the default value of n is 15
 + max(n) = 15
 + some versions of Java allow to set it to 16. Effectively, it is treated as being infinity, not a good idea because at least half of heap memory is definitely wasteful
+```
+
+
+### G1 GC tuning
+- The number of concurrent threads available for the smaller regional collections
+```
+-XX:ConcGCThreads=n
+```
+
+- G1 GC runs whenever the entire heap reaches a certain level of fullness, by default, it is 45%
+```
+-XX:InitiatingHeapOccupancyPercent=n
+```
+
+- The UseStringDeDuplication feature
+  - it has been around since Java 8 and only available if using G1
+  - allows the GC to make more space if it finds duplicate strings in the heap
+  - Suppose we have a number of variables, each pointing to different strings on the heap. So these strings are not in the string pool and they're not eligible for garbage collection because they have active references from the stack
+  - When the garbage collection process runs, GC will compare each of the strings and if it finds two strings that have the same value, it will change the references so that all of the stack variables point to the single object with that value. As a result, making the second object available for garbage collection
+  - GC can do the feature reasonably quickly because it uses the hash codes of the strings and it compares them to find potential duplicates. However, GC is running an extra process which does carry with it some extra overhead
+```
+-XX:UseStringDeDuplication
 ```
