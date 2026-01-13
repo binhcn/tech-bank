@@ -23,6 +23,7 @@
 
 ### Task in Gradle
 - Tasks in gradle are the detailed build steps or an executable unit of work.
+- The representation of tasks as objects in memory is so-called domain objects. Domain objects can be inspected and modified from the build script
 - There are 2 types of task:
 	- ad hoc task: is a good fit for one-off, simplistic action implementations by defining actions, such as doFirst or doLast. It doesn't need to define an explicit type as it automatically extends DefaultTask interface
 	```
@@ -51,7 +52,7 @@
 		- Kotlin DSL
 - Construct a graph of tasks
 	- Gradle parses the build.gradle file by reading it and gets the tasks from that
-	- Gradle builds a complete DAG (directed acyclic graph) and then knows what to do
+	- Gradle builds a complete DAG (directed acyclic graph) in memory and then knows what to do
 - Execute the tasks
 	- Gradle executes the tasks in the graph in the order that it has figured out they have to be executed
 	- Each task gets some input and produces some output that's used by the next task
@@ -205,3 +206,33 @@ org.gradle.logging.level = info
 ```
 gradle tasks --all // not include dependencies
 ```
+### Gradle plugin
+- Gradle introduces the concept of plugin in order to:
+	- Avoid repetitive code
+	- Make build logic more maintainable
+	- Provide reusable functionality across projects
+- There are two types of plugins:
+	- Script plugin: is just another build script that can be included into your main build.gradle file. The primary reason to use the script plugin is to split up the build logic and make it more maintainable.
+		For example: build.gradle includes publishing.gradle and deployment.gradle - same syntax, just a different file
+		```
+		\\ build.gradle
+		apply from: "publishing.gradle"
+		apply from: "deployment.gradle"
+		```
+	- Binary plugin: is meant for more complex logic bundled into a jar file. The reason being that you can reuse the functionality across multiple diffrent repositories.
+		- They are also available as part of the gradle distribution, so-called core plugins. But there are some community plugins out there which are available on the Gradle plugin portal
+		- For example: build.gradle includes Gradle core plugin and Community plugin - implemented as classes, bundled as jar files
+		```
+		\\ build.gradle
+		apply plugin: "base"
+		```
+
+### Domain objects
+<img src="assets/gradle-domain-objects.png" alt="VisualVM GC" width="600"/>
+- org.gradle.invocation.Gradle represents each invocation of a gradle build. This domain object has knowledge about the project hierarchy in a single project or multi project build and provides pointer to the higher-level properties of a build.
+	- For example: register callback logic to react to certain events in the build
+- org.gradle.api.Project serves as the main entry point of a build. It represents a software component and provides methods/API access to the whole hierarchy of domain objects
+	- For example: you could ask for the reference to the gradle instance, register new tasks or get and modify typical environmental properties like the build output directory
+- org.gradle.api.Task represents unit of work with potential dependencies and is performed at runtime. Every task can declare task dependencies.
+- org.gradle.api.Action represents actual work performed during execution phase. Gradle executes those actions in order of declaration but doFirst happens before doLast
+- org.gradle.api.Plugin represents each plugin you apply to a project and provides reusable logic for a project. A plugin has full access to the project it works on and therefore can access other domain objects by name or by type and modify them as necessary.
