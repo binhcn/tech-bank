@@ -236,3 +236,85 @@ gradle tasks --all // not include dependencies
 - org.gradle.api.Task represents unit of work with potential dependencies and is performed at runtime. Every task can declare task dependencies.
 - org.gradle.api.Action represents actual work performed during execution phase. Gradle executes those actions in order of declaration but doFirst happens before doLast
 - org.gradle.api.Plugin represents each plugin you apply to a project and provides reusable logic for a project. A plugin has full access to the project it works on and therefore can access other domain objects by name or by type and modify them as necessary.
+
+
+### Gradle Java Plugin
+- is a core Gradle plugin bundled with the gradle distribution
+- it provides tasks to help projects with compiling, testing and bundling Java source code without having to write custom build logic
+- The plugin introduces conventions and sensible defaults that work for most projects. For example: build/classes contains compiled class files, build/libs contains generated JAR file - Jave ARchive file. Conventions can be configured in the build script to adapt to legacy project structures
+
+### Java application plugin
+- helps with creating executable JVM applications. It serves different use cases:
+	- do "run" task for local development by executing the run task that runs your program without having to build a distribution
+	- execute installDist task to generate OS-specific scripts suitable for starting the program
+	- bundle the generated application files into an archive as the distribution as ZIP or TAR file using the tasks distZip or distTar task
+
+### Basic build.gradle in Java project
+
+```
+plugins {
+	id 'java'	// Add gradle java plugin
+	id 'application'
+}
+
+version = '1.0.0'
+
+java {
+	// Assume a source and target compatibility of version 11 with the help of Java extension created by the Java plugin
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}
+
+application {	// required extension when using application plugin
+	mainClass = 'com.linkedinlearning.calculator.Main'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation project(':api') // add the other sibling module in the repo 
+	implementation 'commons-cli:commons-cli:1.4' // implementation is the scope of dependency
+}
+
+compileJava {
+	options.compilerArgs << '-Werror'	// terminate compilation if a warning occurs
+}
+
+jar {
+	archiveBaseName = 'calculator' // set the name of jar file
+}
+
+---------
+
+./gradlew classes --console=verbose
+> Task :compileJava UP-TO-DATE
+> Task :processResources NO_SOURCE	// copy the files from source/main/resources into the build directory, NO_SOURCE means there is no files to do
+> Task :classes UP-TO-DATE	// aggregate both tasks above
+
+./gradlew jar	// create jar file with the name of project name or project directory
+
+./gradlew run --args="add 1 2"
+
+./gradlew installDist
+cd build/install/calculator/bin
+./calculater add 1 2
+
+./gradlew distZip distTar // generate archive in build/distributions
+
+./gradlew dependencies // render the full tree of dependencies for all configurations available in the project
+
+./gradlew dependencyInsight --dependency gson --configuration compileCLasspath
+
+./gradlew projects // render the projects taking part in the build
+```
+
+### Dependency resolution
+- Gradle Dependency Management Engine downloads its artifacts, stores them in the local cache for reuse and adds them to the classpath of the project
+- Gradle calls the scope of a dependency as a configuration:
+	- implementation: adds the dependency for compiling the code and running the application
+	- compileOnly
+	- default
+	- runtimeClasspath: represents the runtime classpath of the application and therefore automatically inherits the dependencies required for compilation
+	- compileClasspath

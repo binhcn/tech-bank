@@ -213,3 +213,13 @@ Ouput:
 ```
 -XX:UseStringDeDuplication
 ```
+
+### how to build and run jar file from the files structure of Java source codes
+```
+javac src/main/java/com/linkedinlearning/calculator/*.java -d out
+where out: the folder containing class files
+
+jar cfv calculator.jar -C out .
+
+java -cp calculator.jar com.linkedinlearning.calculator.Main add 1 2
+```
