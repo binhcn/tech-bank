@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical Q&A Flashcards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --bg-card: #1a1a1a;
+      --bg-elevated: #222;
+      --gold: #e8c547;
+      --gold-dim: #c9a83a;
+      --mastered: #4ecdc4;
+      --text: #e8e8e8;
+      --text-muted: #888;
+      --danger: #e74c3c;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --shadow-soft: 0 4px 24px rgba(0,0,0,0.25);
+      --shadow-glow: 0 0 40px rgba(232, 197, 71, 0.06);
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --border: 1px solid rgba(255,255,255,0.06);
+      --border-focus: 1px solid rgba(232, 197, 71, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(232, 197, 71, 0.06), transparent 50%),
+                  radial-gradient(ellipse 60% 40% at 100% 50%, rgba(78, 205, 196, 0.04), transparent 50%),
+                  radial-gradient(ellipse 60% 40% at 0% 80%, rgba(232, 197, 71, 0.05), transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 28px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 28px;
+      background: var(--bg-card);
+      padding: 6px;
+      border-radius: var(--radius-lg);
+      border: var(--border);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 14px 18px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: color var(--transition), background var(--transition), transform var(--transition);
+    }
+
+    .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .tab.active {
+      background: rgba(232, 197, 71, 0.12);
+      color: var(--gold);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .panel {
+      display: none;
+      animation: panelIn 0.3s ease-out;
+    }
+    .panel.active { display: block; }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Learn panel */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: var(--shadow-soft);
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: var(--shadow-soft), var(--shadow-glow);
+      transform: translateY(-1px);
+    }
+
+    .stat-card .value {
+      font-size: 1.625rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card.mastered .value { color: var(--mastered); }
+    .stat-card .label {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .learn-controls {
+      background: var(--bg-card);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .learn-controls label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .learn-controls input[type="number"] {
+      width: 100%;
+      max-width: 120px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      background: var(--bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      margin-bottom: 20px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .learn-controls select {
+      width: 100%;
+      max-width: 200px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      background: var(--bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      margin-bottom: 20px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .learn-controls select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.15);
+    }
+
+    .learn-controls input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.15);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 26px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(232, 197, 71, 0.35);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid rgba(232, 197, 71, 0.4);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(232, 197, 71, 0.08);
+      border-color: var(--gold);
+    }
+
+    .btn-danger {
+      background: rgba(231, 76, 60, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(231, 76, 60, 0.35);
+    }
+
+    .btn-danger:hover {
+      background: rgba(231, 76, 60, 0.25);
+      border-color: rgba(231, 76, 60, 0.5);
+    }
+
+    .btn-sm { padding: 10px 16px; font-size: 0.875rem; }
+
+    /* Add Question form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .form-group textarea { min-height: 100px; resize: vertical; }
+
+    .topic-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      min-height: 32px;
+    }
+
+    .topic-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(232, 197, 71, 0.12);
+      color: var(--gold);
+      border-radius: 999px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border: 1px solid rgba(232, 197, 71, 0.2);
+      transition: background var(--transition);
+    }
+
+    .topic-chip-remove {
+      padding: 0;
+      border: none;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      opacity: 0.8;
+      transition: opacity var(--transition);
+    }
+
+    .topic-chip-remove:hover { opacity: 1; }
+
+    .topic-select-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .topic-select-row select {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px 14px;
+      font-size: 0.9375rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .topic-select-row select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.15);
+    }
+
+    .topic-select-row input[type="text"] {
+      flex: 1;
+      min-width: 120px;
+      padding: 12px 14px;
+      font-size: 0.9375rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .topic-select-row input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.15);
+    }
+
+    .topic-select-row .btn-sm { flex-shrink: 0; }
+
+    .word-item .topic-chips {
+      margin-bottom: 6px;
+      min-height: 0;
+    }
+
+    .word-item .topic-chip {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.15);
+    }
+
+    .add-panel .btn-primary { margin-top: 12px; }
+
+    /* My Words list */
+    .words-list { list-style: none; }
+
+    .word-item {
+      background: var(--bg-card);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-soft);
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    }
+
+    .word-item:hover {
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: var(--shadow-soft), var(--shadow-glow);
+      transform: translateY(-1px);
+    }
+
+    .word-item-content { flex: 1; min-width: 0; }
+
+    .word-item .word-title {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+    }
+
+    .word-item .answer {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-style: italic;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .word-item-actions { display: flex; gap: 10px; align-items: center; }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 10px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: 999px;
+      background: rgba(232, 197, 71, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(232, 197, 71, 0.25);
+    }
+
+    .score-badge.mastered {
+      background: rgba(78, 205, 196, 0.15);
+      color: var(--mastered);
+      border-color: rgba(78, 205, 196, 0.3);
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    #learn-modal .modal-content {
+      max-width: 680px;
+      width: 92vw;
+    }
+
+    #learn-modal .flashcard {
+      max-height: 420px;
+    }
+
+    #learn-modal .learn-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      line-height: 1;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--transition), background var(--transition), border-color var(--transition);
+    }
+
+    #learn-modal .learn-close-btn:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .score-change-anim {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0;
+      transition: none;
+    }
+
+    .score-change-anim.run {
+      animation: scoreChangeAnim 0.7s ease-out forwards;
+    }
+
+    .score-change-anim.plus {
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(232, 197, 71, 0.5);
+    }
+
+    .score-change-anim.minus {
+      color: var(--text-muted);
+      text-shadow: 0 0 12px rgba(0,0,0,0.3);
+    }
+
+    @keyframes scoreChangeAnim {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.3);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -70%) scale(1.1);
+      }
+    }
+
+    /* Flashcard 3D flip */
+    .flashcard-wrapper {
+      position: relative;
+      perspective: 1200px;
+      margin-bottom: 24px;
+    }
+
+    .flashcard {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      max-height: 320px;
+      margin: 0 auto;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard.flipped { transform: rotateY(180deg); }
+
+    .flashcard-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 36px;
+      background: var(--bg-card);
+      border: 2px solid rgba(232, 197, 71, 0.25);
+      box-shadow: var(--shadow-soft), 0 0 48px rgba(232, 197, 71, 0.06);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .flashcard-face.back {
+      transform: rotateY(180deg);
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      text-align: left;
+      padding: 28px;
+    }
+
+    .flashcard .front-text {
+      font-size: clamp(1.5rem, 5vw, 2.25rem);
+      font-weight: 700;
+      color: var(--gold);
+      word-break: break-word;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    .flashcard .card-score-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+    }
+
+    .flashcard .back-answer {
+      font-size: 0.9375rem;
+      color: var(--text);
+      white-space: pre-wrap;
+      line-height: 1.6;
+      text-align: left;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 10px;
+      margin-bottom: 18px;
+    }
+
+    .flashcard-face.back .card-actions {
+      flex-shrink: 0;
+      margin-top: 0;
+    }
+
+    .session-progress {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .card-actions .btn { min-width: 144px; }
+
+    .flashcard-stage { display: none; }
+    .flashcard-stage.visible { display: block; }
+
+    /* Session complete popup */
+    .session-complete {
+      display: none;
+      padding: 32px 28px;
+      background: var(--bg-card);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft), var(--shadow-glow);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .session-complete.visible {
+      display: block;
+      animation: sessionCompleteIn 0.25s ease-out;
+    }
+
+    @keyframes sessionCompleteIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .session-complete h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--mastered);
+      margin-bottom: 8px;
+      text-align: center;
+      letter-spacing: -0.02em;
+    }
+
+    .session-complete .session-complete-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .session-complete-stats {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .session-complete-stat {
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+
+    .session-complete-stat.passed {
+      background: rgba(78, 205, 196, 0.15);
+      color: var(--mastered);
+      border: 1px solid rgba(78, 205, 196, 0.25);
+    }
+
+    .session-complete-stat.still-learning {
+      background: rgba(232, 197, 71, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(232, 197, 71, 0.25);
+    }
+
+    .session-complete-list {
+      list-style: none;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-bottom: 24px;
+      padding: 0 8px 0 0;
+      text-align: left;
+      border: var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+    }
+
+    .session-complete-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.9rem;
+    }
+
+    .session-complete-item:last-child { border-bottom: none; }
+
+    .session-complete-item .question-text {
+      flex: 1;
+      min-width: 0;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .session-complete-item .question-score {
+      flex-shrink: 0;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .session-complete-item .question-score.mastered { color: var(--mastered); }
+
+    .session-complete .card-actions { justify-content: center; gap: 16px; }
+
+    /* Edit modal */
+    .edit-modal .modal-content {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      border: var(--border);
+      text-align: left;
+      max-width: 640px;
+      width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow), var(--shadow-glow);
+      animation: modalIn 0.25s ease-out;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .edit-modal h3 {
+      margin-bottom: 20px;
+      color: var(--gold);
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .edit-modal .form-group { margin-bottom: 20px; }
+
+    .edit-modal #edit-answer {
+      min-height: 220px;
+      resize: vertical;
+    }
+
+    .edit-modal .btn { margin-right: 10px; margin-top: 10px; }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 14px 22px;
+      background: var(--bg-card);
+      border: 1px solid rgba(232, 197, 71, 0.25);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-soft);
+      animation: toastIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast.success {
+      border-color: rgba(78, 205, 196, 0.4);
+      color: var(--mastered);
+    }
+    .toast.error {
+      border-color: rgba(231, 76, 60, 0.4);
+      color: var(--danger);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .words-filters {
+      background: var(--bg-card);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .words-filters .form-group { margin-bottom: 16px; }
+    .words-filters .form-group:last-of-type { margin-bottom: 0; }
+
+    .empty-state {
+      text-align: center;
+      padding: 56px 28px;
+      color: var(--text-muted);
+      font-size: 0.9375rem;
+    }
+
+    .empty-state p { margin-bottom: 18px; line-height: 1.5; }
+
+    @media (max-width: 480px) {
+      .app { padding: 20px 16px 40px; }
+      h1 { font-size: 1.5rem; margin-bottom: 24px; }
+      .tabs { flex-direction: column; padding: 6px; }
+      .tab { padding: 12px 16px; }
+      .stat-card { padding: 16px 12px; }
+      .word-item { flex-direction: column; align-items: stretch; padding: 18px; }
+      .word-item-actions { justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Technical Q&A Flashcards</h1>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="learn" type="button">Learn</button>
+      <button class="tab" data-tab="add" type="button">Add Question</button>
+      <button class="tab" data-tab="words" type="button">My Questions</button>
+    </div>
+
+    <!-- Learn panel -->
+    <div id="learn-panel" class="panel active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="value" id="stat-total">0</div>
+          <div class="label">Total Questions</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" id="stat-learning">0</div>
+          <div class="label">Learning</div>
+        </div>
+        <div class="stat-card mastered">
+          <div class="value" id="stat-mastered">0</div>
+          <div class="label">Mastered</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" id="stat-avg">0</div>
+          <div class="label">Avg Score</div>
+        </div>
+      </div>
+      <div class="learn-controls">
+        <label for="words-count">Number of questions to learn</label>
+        <input type="number" id="words-count" min="1" value="5" max="50" />
+        <label for="learn-topic-select">Topic</label>
+        <select id="learn-topic-select">
+          <option value="">All topics</option>
+        </select>
+        <button class="btn btn-primary" id="start-learning" type="button">Start Learning</button>
+      </div>
+    </div>
+
+    <!-- Add Question panel -->
+    <div id="add-panel" class="panel">
+      <form id="add-form">
+        <div class="form-group">
+          <label for="new-question">Question</label>
+          <input type="text" id="new-question" required placeholder="e.g. What is the event loop in JavaScript?" />
+        </div>
+        <div class="form-group">
+          <label for="new-answer">Answer</label>
+          <textarea id="new-answer" required placeholder="e.g. A mechanism that handles async callbacks by continuously checking the call stack and callback queue."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Topics</label>
+          <div id="add-topics-chips" class="topic-chips"></div>
+          <div class="topic-select-row">
+            <select id="add-topic-select">
+              <option value="">Select or create topic...</option>
+            </select>
+            <input type="text" id="add-topic-new" placeholder="New topic name" style="display: none;" />
+            <button type="button" class="btn btn-ghost btn-sm" id="add-topic-add">Add</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Add Question</button>
+      </form>
+    </div>
+
+    <!-- My Questions panel -->
+    <div id="words-panel" class="panel">
+      <div class="words-filters">
+        <div class="form-group">
+          <label for="words-search">Search questions</label>
+          <input type="text" id="words-search" placeholder="Type to search by question text..." />
+        </div>
+        <div class="form-group">
+          <label>Filter by topic</label>
+          <div id="words-filter-chips" class="topic-chips"></div>
+          <div class="topic-select-row">
+            <select id="words-filter-topic-select">
+              <option value="">Select topic...</option>
+            </select>
+            <button type="button" class="btn btn-ghost btn-sm" id="words-filter-topic-add">Add</button>
+          </div>
+        </div>
+      </div>
+      <ul class="words-list" id="words-list"></ul>
+      <div class="empty-state" id="words-empty" style="display: none;">
+        <p>No questions yet. Add your first question in the Add Question tab.</p>
+      </div>
+      <div class="empty-state" id="words-empty-filtered" style="display: none;">
+        <p>No questions match your search or filter.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learning modal -->
+  <div class="modal-overlay" id="learn-modal" aria-hidden="true">
+    <button type="button" class="learn-close-btn" id="learn-close-btn" aria-label="Close">×</button>
+    <div class="modal-content">
+      <div class="flashcard-stage visible" id="flashcard-stage">
+        <p class="session-progress" id="session-progress">Card 1 of 5</p>
+        <div class="flashcard-wrapper">
+          <div class="flashcard" id="flashcard" tabindex="0" role="button">
+            <div class="flashcard-face front">
+              <span class="score-badge card-score-badge" id="card-score-badge">0</span>
+              <span class="front-text" id="card-front-text">—</span>
+            </div>
+            <div class="flashcard-face back">
+              <div class="back-answer" id="card-back-answer">—</div>
+              <div class="card-actions">
+                <button class="btn btn-ghost" type="button" id="btn-still-learning">Still Learning</button>
+                <button class="btn btn-primary" type="button" id="btn-got-it">Got It!</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="session-complete" id="session-complete" role="dialog" aria-labelledby="session-complete-title" aria-describedby="session-complete-desc">
+        <h2 id="session-complete-title">Session Complete</h2>
+        <p id="session-complete-desc" class="session-complete-subtitle">Statistics after learning</p>
+        <div class="session-complete-stats" id="session-complete-stats"></div>
+        <ul class="session-complete-list" id="session-complete-list"></ul>
+        <div class="card-actions">
+          <button class="btn btn-ghost" type="button" id="btn-new-session">New Session</button>
+          <button class="btn btn-primary" type="button" id="btn-done">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit modal -->
+  <div class="modal-overlay edit-modal" id="edit-modal" aria-hidden="true">
+    <div class="modal-content">
+      <h3>Edit Question</h3>
+      <form id="edit-form">
+        <input type="hidden" id="edit-id" />
+        <div class="form-group">
+          <label for="edit-question">Question</label>
+          <input type="text" id="edit-question" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-answer">Answer</label>
+          <textarea id="edit-answer" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Topics</label>
+          <div id="edit-topics-chips" class="topic-chips"></div>
+          <div class="topic-select-row">
+            <select id="edit-topic-select">
+              <option value="">Select or create topic...</option>
+            </select>
+            <input type="text" id="edit-topic-new" placeholder="New topic name" style="display: none;" />
+            <button type="button" class="btn btn-ghost btn-sm" id="edit-topic-add">Add</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-ghost" type="button" id="edit-cancel">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    const API = '/api/words';
+    const TOPICS_API = '/api/topics';
+    let allWords = [];
+    let allTopics = [];
+    let sessionWords = [];
+    let sessionResults = [];
+    let selectedTopicsAdd = [];
+    let selectedTopicsEdit = [];
+    let wordsSearchQuery = '';
+    let wordsFilterTopics = [];
+
+    function normalizeItem(w) {
+      return {
+        ...w,
+        question: w.question ?? w.word ?? '',
+        answer: w.answer ?? w.example ?? '',
+        topics: Array.isArray(w.topics) ? w.topics : [],
+      };
+    }
+    let sessionIndex = 0;
+
+    // ----- API -----
+    async function fetchTopics() {
+      const res = await fetch(TOPICS_API);
+      if (!res.ok) return [];
+      allTopics = await res.json();
+      return allTopics;
+    }
+
+    async function addTopic(name) {
+      const res = await fetch(TOPICS_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim() }),
+      });
+      if (!res.ok) throw new Error('Failed to add topic');
+      const added = await res.json();
+      if (!allTopics.includes(added)) {
+        allTopics.push(added);
+        allTopics.sort();
+      }
+      return added;
+    }
+
+    async function fetchWords() {
+      const res = await fetch(API);
+      if (!res.ok) throw new Error('Failed to load questions');
+      const raw = await res.json();
+      allWords = Array.isArray(raw) ? raw.map(normalizeItem) : [];
+      return allWords;
+    }
+
+    async function addQuestion(question, answer, topics = []) {
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, answer, topics }),
+      });
+      if (!res.ok) throw new Error('Failed to add question');
+      return res.json();
+    }
+
+    async function updateWord(id, data) {
+      const res = await fetch(`${API}/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('Failed to update question');
+      return res.json();
+    }
+
+    async function deleteWord(id) {
+      const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete question');
+    }
+
+    // ----- Stats -----
+    function getStats(words) {
+      const total = words.length;
+      const learning = words.filter((w) => w.score < 5).length;
+      const mastered = words.filter((w) => w.score >= 5).length;
+      const avg = total ? (words.reduce((s, w) => s + w.score, 0) / total).toFixed(1) : '0';
+      return { total, learning, mastered, avg };
+    }
+
+    function renderStats() {
+      const { total, learning, mastered, avg } = getStats(allWords);
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-learning').textContent = learning;
+      document.getElementById('stat-mastered').textContent = mastered;
+      document.getElementById('stat-avg').textContent = avg;
+    }
+
+    // ----- Words list -----
+    function getFilteredWords() {
+      let list = [...allWords].map(normalizeItem);
+      const search = wordsSearchQuery.trim().toLowerCase();
+      if (search) {
+        list = list.filter((w) => (w.question || '').toLowerCase().includes(search));
+      }
+      if (wordsFilterTopics.length > 0) {
+        list = list.filter((w) => (w.topics || []).some((t) => wordsFilterTopics.includes(t)));
+      }
+      return list;
+    }
+
+    function renderWordsList() {
+      const list = document.getElementById('words-list');
+      const empty = document.getElementById('words-empty');
+      const emptyFiltered = document.getElementById('words-empty-filtered');
+      list.innerHTML = '';
+      empty.style.display = 'none';
+      emptyFiltered.style.display = 'none';
+      if (allWords.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      const filtered = getFilteredWords();
+      if (filtered.length === 0) {
+        emptyFiltered.style.display = 'block';
+        return;
+      }
+      filtered.forEach((w) => {
+        const li = document.createElement('li');
+        li.className = 'word-item';
+        const q = normalizeItem(w);
+        const topicChipsHtml = (q.topics || []).length
+          ? `<div class="topic-chips">${(q.topics || []).map((t) => `<span class="topic-chip">${escapeHtml(t)}</span>`).join('')}</div>`
+          : '';
+        li.innerHTML = `
+          <div class="word-item-content">
+            <div class="word-title">${escapeHtml(q.question)}</div>
+            ${topicChipsHtml}
+            <div class="answer">${escapeHtml(q.answer.replace(/\t/g, '    ')).replace(/\n/g, '<br>')}</div>
+          </div>
+          <div class="word-item-actions">
+            <span class="score-badge ${w.score >= 5 ? 'mastered' : ''}">${w.score}</span>
+            <button class="btn btn-ghost btn-sm" type="button" data-edit="${w.id}">Edit</button>
+            <button class="btn btn-danger btn-sm" type="button" data-delete="${w.id}">Delete</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+      list.querySelectorAll('[data-edit]').forEach((btn) => {
+        btn.addEventListener('click', () => openEditModal(parseInt(btn.dataset.edit, 10)));
+      });
+      list.querySelectorAll('[data-delete]').forEach((btn) => {
+        btn.addEventListener('click', () => confirmDelete(parseInt(btn.dataset.delete, 10)));
+      });
+    }
+
+    function populateWordsFilterTopicSelect() {
+      const sel = document.getElementById('words-filter-topic-select');
+      if (!sel) return;
+      const first = sel.options[0];
+      sel.innerHTML = '';
+      sel.appendChild(first);
+      first.value = '';
+      first.textContent = 'Select topic...';
+      allTopics.forEach((t) => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        sel.appendChild(opt);
+      });
+    }
+
+    function renderWordsFilterChips() {
+      const container = document.getElementById('words-filter-chips');
+      if (!container) return;
+      container.innerHTML = '';
+      wordsFilterTopics.forEach((t) => {
+        const chip = document.createElement('span');
+        chip.className = 'topic-chip';
+        chip.textContent = t;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'topic-chip-remove';
+        remove.setAttribute('aria-label', 'Remove filter');
+        remove.textContent = '×';
+        remove.addEventListener('click', () => {
+          wordsFilterTopics = wordsFilterTopics.filter((x) => x !== t);
+          renderWordsFilterChips();
+          renderWordsList();
+        });
+        chip.appendChild(remove);
+        container.appendChild(chip);
+      });
+    }
+
+    function escapeHtml(s) {
+      if (s == null) return '';
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    // ----- Topics -----
+    function populateTopicSelect(selectId) {
+      const sel = document.getElementById(selectId);
+      if (!sel) return;
+      const first = sel.options[0];
+      sel.innerHTML = '';
+      sel.appendChild(first);
+      first.value = '';
+      first.textContent = 'Select or create topic...';
+      allTopics.forEach((t) => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        sel.appendChild(opt);
+      });
+      const newOpt = document.createElement('option');
+      newOpt.value = '__new__';
+      newOpt.textContent = '+ Create new topic...';
+      sel.appendChild(newOpt);
+    }
+
+    function renderTopicChips(containerId, selected, onRemove) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      selected.forEach((t) => {
+        const chip = document.createElement('span');
+        chip.className = 'topic-chip';
+        chip.textContent = t;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'topic-chip-remove';
+        remove.setAttribute('aria-label', 'Remove topic');
+        remove.textContent = '×';
+        remove.addEventListener('click', () => onRemove(t));
+        chip.appendChild(remove);
+        container.appendChild(chip);
+      });
+    }
+
+    // ----- Toasts -----
+    function toast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    // ----- Tabs -----
+    document.querySelectorAll('.tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab + '-panel').classList.add('active');
+        if (tab.dataset.tab === 'learn') populateLearnTopicSelect();
+        if (tab.dataset.tab === 'words') {
+          populateWordsFilterTopicSelect();
+          renderWordsFilterChips();
+        }
+      });
+    });
+
+    // ----- My Questions: search and topic filter -----
+    document.getElementById('words-search').addEventListener('input', function () {
+      wordsSearchQuery = this.value;
+      renderWordsList();
+    });
+
+    document.getElementById('words-filter-topic-add').addEventListener('click', () => {
+      const select = document.getElementById('words-filter-topic-select');
+      if (!select.value || wordsFilterTopics.includes(select.value)) return;
+      wordsFilterTopics.push(select.value);
+      wordsFilterTopics.sort();
+      renderWordsFilterChips();
+      renderWordsList();
+      select.value = '';
+    });
+
+    // ----- Add form -----
+    document.getElementById('add-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const question = document.getElementById('new-question').value.trim();
+      const answer = document.getElementById('new-answer').value.trim();
+      try {
+        await addQuestion(question, answer, selectedTopicsAdd);
+        await fetchWords();
+        renderStats();
+        renderWordsList();
+        document.getElementById('add-form').reset();
+        selectedTopicsAdd = [];
+        renderTopicChips('add-topics-chips', selectedTopicsAdd, addTopicRemove);
+        toast('Question added!', 'success');
+      } catch (err) {
+        toast(err.message || 'Failed to add question', 'error');
+      }
+    });
+
+    function addTopicRemove(t) {
+      selectedTopicsAdd = selectedTopicsAdd.filter((x) => x !== t);
+      renderTopicChips('add-topics-chips', selectedTopicsAdd, addTopicRemove);
+    }
+
+    function editTopicRemove(t) {
+      selectedTopicsEdit = selectedTopicsEdit.filter((x) => x !== t);
+      renderTopicChips('edit-topics-chips', selectedTopicsEdit, editTopicRemove);
+    }
+
+    document.getElementById('add-topic-select').addEventListener('change', function () {
+      const newInput = document.getElementById('add-topic-new');
+      newInput.style.display = this.value === '__new__' ? 'block' : 'none';
+      if (this.value !== '__new__') newInput.value = '';
+    });
+
+    document.getElementById('add-topic-add').addEventListener('click', async () => {
+      const select = document.getElementById('add-topic-select');
+      const newInput = document.getElementById('add-topic-new');
+      if (select.value === '__new__') {
+        const name = newInput.value.trim();
+        if (!name) return;
+        try {
+          await addTopic(name);
+          populateTopicSelect('add-topic-select');
+          if (!selectedTopicsAdd.includes(name)) selectedTopicsAdd.push(name);
+          selectedTopicsAdd.sort();
+          renderTopicChips('add-topics-chips', selectedTopicsAdd, addTopicRemove);
+          newInput.value = '';
+          newInput.style.display = 'none';
+          select.value = '';
+        } catch (err) {
+          toast(err.message || 'Failed to add topic', 'error');
+        }
+      } else if (select.value && !selectedTopicsAdd.includes(select.value)) {
+        selectedTopicsAdd.push(select.value);
+        selectedTopicsAdd.sort();
+        renderTopicChips('add-topics-chips', selectedTopicsAdd, addTopicRemove);
+        select.value = '';
+      }
+    });
+
+    document.getElementById('edit-topic-select').addEventListener('change', function () {
+      const newInput = document.getElementById('edit-topic-new');
+      newInput.style.display = this.value === '__new__' ? 'block' : 'none';
+      if (this.value !== '__new__') newInput.value = '';
+    });
+
+    document.getElementById('edit-topic-add').addEventListener('click', async () => {
+      const select = document.getElementById('edit-topic-select');
+      const newInput = document.getElementById('edit-topic-new');
+      if (select.value === '__new__') {
+        const name = newInput.value.trim();
+        if (!name) return;
+        try {
+          await addTopic(name);
+          populateTopicSelect('edit-topic-select');
+          populateTopicSelect('add-topic-select');
+          if (!selectedTopicsEdit.includes(name)) selectedTopicsEdit.push(name);
+          selectedTopicsEdit.sort();
+          renderTopicChips('edit-topics-chips', selectedTopicsEdit, editTopicRemove);
+          newInput.value = '';
+          newInput.style.display = 'none';
+          select.value = '';
+        } catch (err) {
+          toast(err.message || 'Failed to add topic', 'error');
+        }
+      } else if (select.value && !selectedTopicsEdit.includes(select.value)) {
+        selectedTopicsEdit.push(select.value);
+        selectedTopicsEdit.sort();
+        renderTopicChips('edit-topics-chips', selectedTopicsEdit, editTopicRemove);
+        select.value = '';
+      }
+    });
+
+    // ----- Edit modal -----
+    function openEditModal(id) {
+      const w = allWords.find((x) => x.id === id);
+      if (!w) return;
+      const q = normalizeItem(w);
+      document.getElementById('edit-id').value = w.id;
+      document.getElementById('edit-question').value = q.question;
+      document.getElementById('edit-answer').value = q.answer;
+      selectedTopicsEdit = [...(q.topics || [])];
+      renderTopicChips('edit-topics-chips', selectedTopicsEdit, editTopicRemove);
+      populateTopicSelect('edit-topic-select');
+      document.getElementById('edit-topic-new').style.display = 'none';
+      document.getElementById('edit-topic-new').value = '';
+      document.getElementById('edit-topic-select').value = '';
+      document.getElementById('edit-modal').classList.add('open');
+      document.getElementById('edit-modal').setAttribute('aria-hidden', 'false');
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').classList.remove('open');
+      document.getElementById('edit-modal').setAttribute('aria-hidden', 'true');
+    }
+
+    document.getElementById('edit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = parseInt(document.getElementById('edit-id').value, 10);
+      const question = document.getElementById('edit-question').value.trim();
+      const answer = document.getElementById('edit-answer').value.trim();
+      try {
+        await updateWord(id, { question, answer, topics: selectedTopicsEdit });
+        await fetchWords();
+        renderStats();
+        renderWordsList();
+        closeEditModal();
+        toast('Question updated!', 'success');
+      } catch (err) {
+        toast(err.message || 'Failed to update', 'error');
+      }
+    });
+
+    document.getElementById('edit-cancel').addEventListener('click', closeEditModal);
+
+    // ----- Delete -----
+    async function confirmDelete(id) {
+      const w = allWords.find((x) => x.id === id);
+      if (!w) return;
+      if (!confirm(`Delete this question? This cannot be undone.`)) return;
+      try {
+        await deleteWord(id);
+        await fetchWords();
+        renderStats();
+        renderWordsList();
+        toast('Question deleted', 'success');
+      } catch (err) {
+        toast(err.message || 'Failed to delete', 'error');
+      }
+    }
+
+    // ----- Learning session -----
+    function getWordsForSession(n, topicFilter) {
+      const normalized = [...allWords].map(normalizeItem);
+      let list = normalized;
+      if (topicFilter && topicFilter !== '') {
+        list = list.filter((w) => (w.topics || []).includes(topicFilter));
+      }
+      list.sort((a, b) => (a.score ?? 0) - (b.score ?? 0));
+      return list.slice(0, Math.min(n, list.length));
+    }
+
+    function populateLearnTopicSelect() {
+      const sel = document.getElementById('learn-topic-select');
+      if (!sel) return;
+      const first = sel.options[0];
+      sel.innerHTML = '';
+      sel.appendChild(first);
+      first.value = '';
+      first.textContent = 'All topics';
+      allTopics.forEach((t) => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        sel.appendChild(opt);
+      });
+    }
+
+    function openLearnModal() {
+      const count = Math.max(1, parseInt(document.getElementById('words-count').value, 10) || 5);
+      const topicFilter = (document.getElementById('learn-topic-select')?.value || '').trim();
+      sessionWords = getWordsForSession(count, topicFilter);
+      if (sessionWords.length === 0) {
+        toast('No questions in this topic. Add questions or pick another topic.', 'error');
+        return;
+      }
+      sessionIndex = 0;
+      sessionResults = [];
+      document.getElementById('learn-modal').classList.add('open');
+      document.getElementById('learn-modal').setAttribute('aria-hidden', 'false');
+      document.getElementById('flashcard-stage').classList.add('visible');
+      document.getElementById('session-complete').classList.remove('visible');
+      showCurrentCard();
+    }
+
+    function closeLearnModal() {
+      document.getElementById('learn-modal').classList.remove('open');
+      document.getElementById('learn-modal').setAttribute('aria-hidden', 'true');
+    }
+
+    function renderSessionComplete() {
+      const gotIt = sessionResults.filter((r) => r.passed).length;
+      const stillLearning = sessionResults.filter((r) => !r.passed).length;
+      document.getElementById('session-complete-stats').innerHTML = `
+        <span class="session-complete-stat passed">${gotIt} Got it</span>
+        <span class="session-complete-stat still-learning">${stillLearning} Still learning</span>
+      `;
+      document.getElementById('session-complete-list').innerHTML = sessionResults
+        .map(
+          (r) => `
+        <li class="session-complete-item">
+          <span class="question-text">${escapeHtml(r.question)}</span>
+          <span class="question-score ${r.finalScore >= 5 ? 'mastered' : ''}">${r.finalScore}</span>
+        </li>
+      `
+        )
+        .join('');
+    }
+
+    function showCurrentCard() {
+      if (sessionWords.length === 0) {
+        document.getElementById('flashcard-stage').classList.remove('visible');
+        document.getElementById('session-complete').classList.add('visible');
+        renderSessionComplete();
+        return;
+      }
+      const card = document.getElementById('flashcard');
+      card.classList.remove('flipped');
+      const w = sessionWords[0];
+      const q = normalizeItem(w);
+      document.getElementById('card-front-text').textContent = q.question;
+      document.getElementById('card-score-badge').textContent = w.score;
+      document.getElementById('card-score-badge').className =
+        'score-badge card-score-badge' + (w.score >= 5 ? ' mastered' : '');
+      document.getElementById('card-back-answer').textContent = (q.answer || '—').replace(/\t/g, '    ');
+      document.getElementById('session-progress').textContent =
+        `Card ${sessionIndex + 1} of ${sessionIndex + sessionWords.length}`;
+      card.focus();
+    }
+
+    function showScoreChangeAnim(delta) {
+      const wrapper = document.querySelector('#learn-modal .flashcard-wrapper');
+      if (!wrapper) return;
+      const el = document.createElement('div');
+      el.className = 'score-change-anim ' + (delta >= 0 ? 'plus' : 'minus');
+      el.textContent = delta >= 0 ? '+1' : '-1';
+      wrapper.appendChild(el);
+      requestAnimationFrame(() => { el.classList.add('run'); });
+      setTimeout(() => { el.remove(); }, 700);
+    }
+
+    async function markCard(delta) {
+      if (sessionWords.length === 0) return;
+      const w = sessionWords[0];
+      const q = normalizeItem(w);
+      showScoreChangeAnim(delta);
+      const newScore = Math.max(0, w.score + delta);
+      sessionResults.push({
+        question: q.question || '—',
+        finalScore: newScore,
+        passed: delta === 1,
+      });
+      try {
+        await updateWord(w.id, { score: newScore });
+        const idx = allWords.findIndex((x) => x.id === w.id);
+        if (idx !== -1) allWords[idx].score = newScore;
+      } catch (err) {
+        toast(err.message || 'Failed to update score', 'error');
+      }
+      sessionWords.shift();
+      sessionIndex++;
+      renderStats();
+      renderWordsList();
+      showCurrentCard();
+    }
+
+    document.getElementById('start-learning').addEventListener('click', openLearnModal);
+
+    document.getElementById('flashcard').addEventListener('click', (e) => {
+      if (e.target.closest('.card-actions')) return;
+      document.getElementById('flashcard').classList.toggle('flipped');
+    });
+
+    document.getElementById('btn-got-it').addEventListener('click', () => markCard(1));
+    document.getElementById('btn-still-learning').addEventListener('click', () => markCard(-1));
+
+    document.getElementById('btn-new-session').addEventListener('click', () => {
+      closeLearnModal();
+      setTimeout(openLearnModal, 200);
+    });
+    document.getElementById('btn-done').addEventListener('click', closeLearnModal);
+
+    document.getElementById('learn-close-btn').addEventListener('click', closeLearnModal);
+
+    // ----- Keyboard -----
+    document.addEventListener('keydown', (e) => {
+      const learnModal = document.getElementById('learn-modal');
+      const editModal = document.getElementById('edit-modal');
+      if (e.key === 'Escape') {
+        if (learnModal.classList.contains('open')) closeLearnModal();
+        else if (editModal.classList.contains('open')) closeEditModal();
+        return;
+      }
+      if (!learnModal.classList.contains('open')) return;
+      if (document.getElementById('session-complete').classList.contains('visible')) return;
+      const card = document.getElementById('flashcard');
+      if (e.key === ' ') {
+        e.preventDefault();
+        card.classList.toggle('flipped');
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (card.classList.contains('flipped')) {
+          document.getElementById('btn-got-it').click();
+        } else {
+          card.classList.toggle('flipped');
+        }
+        return;
+      }
+      if (card.classList.contains('flipped')) {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          document.getElementById('btn-still-learning').click();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          document.getElementById('btn-got-it').click();
+        }
+      }
+    });
+
+    // ----- Init -----
+    (async () => {
+      try {
+        await fetchTopics();
+        populateTopicSelect('add-topic-select');
+        populateTopicSelect('edit-topic-select');
+        populateLearnTopicSelect();
+        populateWordsFilterTopicSelect();
+        renderTopicChips('add-topics-chips', selectedTopicsAdd, addTopicRemove);
+        renderWordsFilterChips();
+        await fetchWords();
+        renderStats();
+        renderWordsList();
+      } catch (err) {
+        toast('Could not load questions. Is the server running?', 'error');
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -61,3 +61,6 @@ the new software is designed to emulate older operating systems
 
 count as: coi là, cân nhắc
 he doesn't count as a member
+
+discount: không đếm xỉa, coi nhẹ
+he could discount what I said

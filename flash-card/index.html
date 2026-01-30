@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0f0f0f;
+            color: #e8e8e8;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(232, 197, 71, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #e8c547;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a8a8a8;
+            font-size: 1.1em;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 30px 0;
+            border-bottom: 2px solid rgba(232, 197, 71, 0.2);
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            color: #a8a8a8;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: #e8c547;
+        }
+
+        .tab.active {
+            color: #e8c547;
+            border-bottom-color: #e8c547;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Statistics */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(232, 197, 71, 0.2);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #e8c547;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #a8a8a8;
+            font-size: 0.9em;
+        }
+
+        .stat-card.mastered .stat-value {
+            color: #4ecdc4;
+        }
+
+        /* Learning Section */
+        .learning-section {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .word-count-selector {
+            margin: 30px 0;
+        }
+
+        .word-count-selector label {
+            display: block;
+            margin-bottom: 10px;
+            color: #a8a8a8;
+        }
+
+        .word-count-selector input {
+            width: 100px;
+            padding: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(232, 197, 71, 0.3);
+            border-radius: 8px;
+            color: #e8e8e8;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            background: #e8c547;
+            color: #0f0f0f;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(232, 197, 71, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e8e8e8;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e8c547;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(232, 197, 71, 0.3);
+            border-radius: 8px;
+            color: #e8e8e8;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e8c547;
+        }
+
+        /* Word List */
+        .word-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .word-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(232, 197, 71, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            transition: all 0.3s;
+        }
+
+        .word-item:hover {
+            border-color: #e8c547;
+            background: rgba(232, 197, 71, 0.05);
+        }
+
+        .word-content {
+            flex: 1;
+        }
+
+        .word-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .word-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #e8c547;
+        }
+
+        .score-badge {
+            background: rgba(232, 197, 71, 0.2);
+            color: #e8c547;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .score-badge.mastered {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+        }
+
+        .word-meaning {
+            color: #a8a8a8;
+            margin-bottom: 8px;
+        }
+
+        .word-example {
+            color: #888;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        .word-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 6px;
+            color: #e8e8e8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        /* Flashcard */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #e8c547 0%, #d4af37 100%);
+            color: #0f0f0f;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #2d2d44 0%, #1f1f2e 100%);
+            color: #e8e8e8;
+            transform: rotateY(180deg);
+            border: 2px solid #e8c547;
+        }
+
+        .card-word {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .card-meaning {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #e8c547;
+        }
+
+        .card-example {
+            font-size: 1.1em;
+            font-style: italic;
+            text-align: center;
+            color: #a8a8a8;
+            white-space: pre-line;
+        }
+
+        .card-score-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e8c547;
+            color: #0f0f0f;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* Learning buttons */
+        .learning-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-got-it {
+            background: #4ecdc4;
+            color: #0f0f0f;
+        }
+
+        .btn-still-learning {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        /* Session Complete */
+        .session-complete {
+            text-align: center;
+        }
+
+        .session-complete h2 {
+            font-size: 2.5em;
+            color: #4ecdc4;
+            margin-bottom: 20px;
+        }
+
+        .session-complete-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #e8c547;
+            color: #0f0f0f;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            font-weight: 500;
+            z-index: 2000;
+            animation: slideIn 0.3s, slideOut 0.3s 2.7s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); }
+            to { transform: translateX(400px); }
+        }
+
+        /* Confirmation Dialog */
+        .confirm-dialog {
+            background: #1f1f2e;
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #e8c547;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-dialog h3 {
+            color: #e8c547;
+            margin-bottom: 15px;
+        }
+
+        .confirm-dialog p {
+            margin-bottom: 25px;
+            color: #a8a8a8;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a8a8a8;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+
+            .flashcard-container {
+                height: 300px;
+            }
+
+            .card-word {
+                font-size: 2em;
+            }
+
+            .card-meaning {
+                font-size: 1.2em;
+            }
+
+            .learning-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Vocabulary Flashcards</h1>
+            <p class="subtitle">Master English words with spaced repetition</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="learn">Learn</button>
+            <button class="tab" data-tab="add">Add Word</button>
+            <button class="tab" data-tab="words">My Words</button>
+        </div>
+
+        <!-- Learn Tab -->
+        <div class="tab-content active" id="learn-tab">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-words">0</div>
+                    <div class="stat-label">Total Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="learning-words">0</div>
+                    <div class="stat-label">Learning</div>
+                </div>
+                <div class="stat-card mastered">
+                    <div class="stat-value" id="mastered-words">0</div>
+                    <div class="stat-label">Mastered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avg-score">0</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+            </div>
+
+            <div class="learning-section">
+                <div class="word-count-selector">
+                    <label for="word-count">How many words to learn?</label>
+                    <input type="number" id="word-count" value="5" min="1" max="50">
+                </div>
+                <button class="btn" id="start-learning">Start Learning</button>
+            </div>
+        </div>
+
+        <!-- Add Word Tab -->
+        <div class="tab-content" id="add-tab">
+            <form id="add-word-form">
+                <div class="form-group">
+                    <label for="word-input">Word *</label>
+                    <input type="text" id="word-input" required placeholder="Enter a word">
+                </div>
+                <div class="form-group">
+                    <label for="meaning-input">Meaning *</label>
+                    <input type="text" id="meaning-input" required placeholder="Enter the definition">
+                </div>
+                <div class="form-group">
+                    <label for="example-input">Example Sentence *</label>
+                    <textarea id="example-input" required placeholder="Enter an example sentence (use \n for line breaks)"></textarea>
+                </div>
+                <button type="submit" class="btn">Add Word</button>
+            </form>
+        </div>
+
+        <!-- My Words Tab -->
+        <div class="tab-content" id="words-tab">
+            <div class="word-list" id="word-list"></div>
+        </div>
+    </div>
+
+    <!-- Learning Modal -->
+    <div class="modal" id="learning-modal">
+        <div class="modal-content">
+            <div id="flashcard-view">
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="card-face card-front">
+                            <div class="card-word" id="card-word-front"></div>
+                        </div>
+                        <div class="card-face card-back">
+                            <div class="card-score-badge" id="card-score"></div>
+                            <div class="card-meaning" id="card-meaning"></div>
+                            <div class="card-example" id="card-example"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="learning-buttons">
+                    <button class="btn btn-still-learning" id="btn-still-learning">
+                        Still Learning 📖
+                    </button>
+                    <button class="btn btn-got-it" id="btn-got-it">
+                        Got It! ✓
+                    </button>
+                </div>
+            </div>
+
+            <div id="session-complete-view" style="display: none;">
+                <div class="session-complete">
+                    <h2>🎉 Session Complete!</h2>
+                    <p>Great job! You've reviewed all the words.</p>
+                    <div class="session-complete-buttons">
+                        <button class="btn btn-secondary" id="btn-close-session">Done</button>
+                        <button class="btn" id="btn-new-session">New Session</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog Modal -->
+    <div class="modal" id="confirm-modal">
+        <div class="confirm-dialog">
+            <h3>Confirm Delete</h3>
+            <p id="confirm-message"></p>
+            <div class="confirm-buttons">
+                <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
+                <button class="btn btn-danger" id="btn-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+        let words = [];
+        let currentSession = [];
+        let currentCardIndex = 0;
+        let isFlipped = false;
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update active content
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+                
+                if (tabName === 'words') {
+                    renderWordList();
+                }
+            });
+        });
+
+        // Fetch words from server
+        async function fetchWords() {
+            try {
+                const response = await fetch(`${API_URL}/api/words`);
+                words = await response.json();
+                updateStats();
+            } catch (error) {
+                showToast('Error fetching words');
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = words.length;
+            const learning = words.filter(w => w.score < 5).length;
+            const mastered = words.filter(w => w.score >= 5).length;
+            const avgScore = total > 0 ? (words.reduce((sum, w) => sum + w.score, 0) / total).toFixed(1) : 0;
+
+            document.getElementById('total-words').textContent = total;
+            document.getElementById('learning-words').textContent = learning;
+            document.getElementById('mastered-words').textContent = mastered;
+            document.getElementById('avg-score').textContent = avgScore;
+        }
+
+        // Add word
+        document.getElementById('add-word-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const word = document.getElementById('word-input').value;
+            const meaning = document.getElementById('meaning-input').value;
+            const example = document.getElementById('example-input').value;
+
+            try {
+                const response = await fetch(`${API_URL}/api/words`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ word, meaning, example })
+                });
+
+                if (response.ok) {
+                    showToast('Word added successfully!');
+                    document.getElementById('add-word-form').reset();
+                    await fetchWords();
+                }
+            } catch (error) {
+                showToast('Error adding word');
+            }
+        });
+
+        // Render word list
+        function renderWordList() {
+            const wordList = document.getElementById('word-list');
+            
+            if (words.length === 0) {
+                wordList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No words yet</h3>
+                        <p>Start building your vocabulary by adding words!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            wordList.innerHTML = words.map(word => `
+                <div class="word-item">
+                    <div class="word-content">
+                        <div class="word-header">
+                            <div class="word-title">${escapeHtml(word.word)}</div>
+                            <div class="score-badge ${word.score >= 5 ? 'mastered' : ''}">
+                                Score: ${word.score}
+                            </div>
+                        </div>
+                        <div class="word-meaning">${escapeHtml(word.meaning)}</div>
+                        <div class="word-example">${formatExample(word.example)}</div>
+                    </div>
+                    <div class="word-actions">
+                        <button class="icon-btn" onclick="editWord(${word.id})">✏️ Edit</button>
+                        <button class="icon-btn" onclick="deleteWord(${word.id}, '${escapeHtml(word.word)}')">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Edit word
+        async function editWord(id) {
+            const word = words.find(w => w.id === id);
+            if (!word) return;
+
+            const newWord = prompt('Word:', word.word);
+            if (newWord === null) return;
+
+            const newMeaning = prompt('Meaning:', word.meaning);
+            if (newMeaning === null) return;
+
+            const newExample = prompt('Example:', word.example);
+            if (newExample === null) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/words/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        word: newWord,
+                        meaning: newMeaning,
+                        example: newExample
+                    })
+                });
+
+                if (response.ok) {
+                    showToast('Word updated successfully!');
+                    await fetchWords();
+                    renderWordList();
+                }
+            } catch (error) {
+                showToast('Error updating word');
+            }
+        }
+
+        // Delete word
+        function deleteWord(id, word) {
+            showConfirmDialog(`Are you sure you want to delete "${word}"?`, async () => {
+                try {
+                    const response = await fetch(`${API_URL}/api/words/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        showToast('Word deleted successfully!');
+                        await fetchWords();
+                        renderWordList();
+                    }
+                } catch (error) {
+                    showToast('Error deleting word');
+                }
+            });
+        }
+
+        // Start learning session
+        document.getElementById('start-learning').addEventListener('click', () => {
+            const count = parseInt(document.getElementById('word-count').value);
+            
+            // Get N words with lowest scores
+            const learningWords = [...words]
+                .sort((a, b) => a.score - b.score)
+                .slice(0, count);
+
+            if (learningWords.length === 0) {
+                showToast('No words available to learn!');
+                return;
+            }
+
+            currentSession = learningWords;
+            currentCardIndex = 0;
+            showCard();
+            document.getElementById('learning-modal').classList.add('active');
+        });
+
+        // Show current card
+        function showCard() {
+            if (currentCardIndex >= currentSession.length) {
+                showSessionComplete();
+                return;
+            }
+
+            const word = currentSession[currentCardIndex];
+            document.getElementById('card-word-front').textContent = word.word;
+            document.getElementById('card-meaning').textContent = word.meaning;
+            document.getElementById('card-example').innerHTML = formatExample(word.example);
+            document.getElementById('card-score').textContent = `Score: ${word.score}`;
+            
+            // Reset flip state
+            isFlipped = false;
+            document.getElementById('flashcard').classList.remove('flipped');
+            
+            document.getElementById('flashcard-view').style.display = 'block';
+            document.getElementById('session-complete-view').style.display = 'none';
+        }
+
+        // Flip card
+        document.getElementById('flashcard').addEventListener('click', () => {
+            isFlipped = !isFlipped;
+            document.getElementById('flashcard').classList.toggle('flipped');
+        });
+
+        // Got it button
+        document.getElementById('btn-got-it').addEventListener('click', async () => {
+            const word = currentSession[currentCardIndex];
+            await updateWordScore(word.id, word.score + 1);
+            currentCardIndex++;
+            showCard();
+        });
+
+        // Still learning button
+        document.getElementById('btn-still-learning').addEventListener('click', async () => {
+            const word = currentSession[currentCardIndex];
+            await updateWordScore(word.id, Math.max(0, word.score - 1));
+            currentCardIndex++;
+            showCard();
+        });
+
+        // Update word score
+        async function updateWordScore(id, newScore) {
+            try {
+                await fetch(`${API_URL}/api/words/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ score: newScore })
+                });
+                await fetchWords();
+            } catch (error) {
+                console.error('Error updating score:', error);
+            }
+        }
+
+        // Show session complete
+        function showSessionComplete() {
+            document.getElementById('flashcard-view').style.display = 'none';
+            document.getElementById('session-complete-view').style.display = 'block';
+        }
+
+        // Close session
+        document.getElementById('btn-close-session').addEventListener('click', () => {
+            document.getElementById('learning-modal').classList.remove('active');
+        });
+
+        // New session
+        document.getElementById('btn-new-session').addEventListener('click', () => {
+            document.getElementById('learning-modal').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('start-learning').click();
+            }, 300);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('learning-modal');
+            if (!modal.classList.contains('active')) return;
+
+            if (document.getElementById('session-complete-view').style.display !== 'none') return;
+
+            if (e.key === 'Escape') {
+                modal.classList.remove('active');
+            } else if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('flashcard').click();
+            } else if (e.key === 'ArrowRight' && isFlipped) {
+                document.getElementById('btn-got-it').click();
+            } else if (e.key === 'ArrowLeft' && isFlipped) {
+                document.getElementById('btn-still-learning').click();
+            }
+        });
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Show confirmation dialog
+        function showConfirmDialog(message, onConfirm) {
+            const modal = document.getElementById('confirm-modal');
+            document.getElementById('confirm-message').textContent = message;
+            modal.classList.add('active');
+
+            const confirmBtn = document.getElementById('btn-confirm');
+            const cancelBtn = document.getElementById('btn-cancel');
+
+            const confirm = () => {
+                onConfirm();
+                modal.classList.remove('active');
+                cleanup();
+            };
+
+            const cancel = () => {
+                modal.classList.remove('active');
+                cleanup();
+            };
+
+            const cleanup = () => {
+                confirmBtn.removeEventListener('click', confirm);
+                cancelBtn.removeEventListener('click', cancel);
+            };
+
+            confirmBtn.addEventListener('click', confirm);
+            cancelBtn.addEventListener('click', cancel);
+        }
+
+        // Utility functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatExample(text) {
+            return escapeHtml(text).replace(/\\n/g, '<br>');
+        }
+
+        // Initialize
+        fetchWords();
+    </script>
+</body>
+</html>
