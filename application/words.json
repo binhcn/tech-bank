@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1770218036005,
+    "question": "How long does it take to read from RAM, SSD and HDD",
+    "answer": "RAM: 100 ns\nSSD: 100 microsecond, 1 000x slower than RAM\nHDD: 10 ms, 100 000 x slower than RAM",
+    "score": 3,
+    "topics": [
+      "OS"
+    ]
+  },
+  {
+    "id": 1770218712245,
+    "question": "The key insight of disk's data access",
+    "answer": "- Disks are terrible at random access but great at sequential access\n    - Reading 1MB of consecutive bytes is much faster than reading each byte at random locations\n=> This is why database storage engine are all about minimizing random disk access and bring us to two main approaches: B-Tree and LSM Tree",
+    "score": 0,
+    "topics": [
+      "Database",
+      "OS"
+    ]
+  },
+  {
+    "id": 1770219331902,
+    "question": "B-Tree",
+    "answer": "- Sorted tree structure\n- Optimized for reads, more expensive for writes",
+    "score": 1,
+    "topics": [
+      "DSA",
+      "Database"
+    ]
+  },
+  {
+    "id": 1770219743378,
+    "question": "Why are B-Tree's writes expensive",
+    "answer": "How it works\n    - Find insertion point (multiple disk reads)\n    - Split nodes if full (node overflow)\n    - Update parent pointer\n    - Rebalance tree (if needed)\nIn the worst case, inserting one record can touch dozens of page on disk",
+    "score": 0,
+    "topics": [
+      "DSA",
+      "Database"
+    ]
+  },
+  {
+    "id": 1770219896895,
+    "question": "LSM - Log Structured Merge tree",
+    "answer": "- Write-optimized approach\n- used in Cassandra, RocksDB\n- use Bloom Filter",
+    "score": 0,
+    "topics": [
+      "Database"
+    ]
+  },
+  {
+    "id": 1770222598157,
+    "question": "ArrayList",
+    "answer": "- it is implemented in memory as an array\n- When we instantiate an ArrayList, it creates an empty internal array on the heap with 10 elements inside - DEFAULT_CAPACITY = 10\n- When we add the item and the capacity is full, a new larger array is allocated in memory. All elements from the old array are copied to the new one. The new element is then added. The old array is made eligible for garbage collection",
+    "score": 0,
+    "topics": [
+      "Java"
+    ]
+  },
+  {
+    "id": 1770223810501,
+    "question": "The formula of resizing in ArrayList",
+    "answer": "The array each time it resizes is going to grow by half of its current size\nnewCapacity = oldCapacity + (oldCapacity >> 1)\nEx: 10 -> 15 = 10 + 10/2 -> 22 = 15 + 15/2 -> 33 = 22 + 22/2",
+    "score": 0,
+    "topics": [
+      "Java"
+    ]
+  }
+]
